@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Berkas Santri</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f0f2f5;
+            padding-bottom: 90px;
+        }
+        .navbar {
+            backdrop-filter: blur(10px);
+            background-color: rgba(13, 110, 253, 0.95) !important;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .search-box {
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            padding-left: 40px;
+            transition: 0.3s;
+        }
+        .search-box:focus {
+            border-color: #0d6efd;
+            box-shadow: none;
+        }
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        .filter-select {
+            border-radius: 10px;
+            font-size: 0.85rem;
+            border: 1px solid #ddd;
+        }
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .card-santri {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            transition: 0.2s;
+        }
+        .badge-kelas {
+            background-color: #e7f1ff;
+            color: #0d6efd;
+            font-weight: 600;
+        }
+        .fab {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
+            z-index: 999;
+        }
+        .wa-btn {
+            background-color: #25D366;
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .btn-excel {
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .form-check {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 5px 10px !important;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-primary shadow-sm">
+    <div class="container text-center">
+        <span class="navbar-brand fw-bold mx-auto"><i class="bi bi-person-check-fill me-2"></i>Admin Kesantrian</span>
+    </div>
+</nav>
+
+<div class="container mt-3">
+    <div class="stats-card d-flex justify-content-around text-center">
+        <div>
+            <div class="small text-muted">Total Santri</div>
+            <div class="fw-bold h5 mb-0" id="statTotal">0</div>
+        </div>
+        <div class="border-start"></div>
+        <div>
+            <div class="small text-muted">Lengkap</div>
+            <div class="fw-bold h5 mb-0 text-success" id="statLengkap">0</div>
+        </div>
+    </div>
+    
+    <div class="d-flex gap-2 mb-3">
+        <button class="btn btn-success btn-excel flex-fill" onclick="document.getElementById('fileImport').click()">
+            <i class="bi bi-file-earmark-excel me-1"></i> Import
+        </button>
+        <button class="btn btn-outline-primary btn-excel flex-fill" onclick="exportExcel()">
+            <i class="bi bi-download me-1"></i> Export
+        </button>
+        <button class="btn wa-btn flex-fill" onclick="kirimRekapGrup()">
+            <i class="bi bi-whatsapp me-1"></i> Rekap WA
+        </button>
+        <button class="btn btn-danger btn-excel px-3" onclick="hapusSemuaSantri()" title="Hapus Semua Data">
+            <i class="bi bi-trash3-fill"></i>
+        </button>
+        <input type="file" id="fileImport" hidden accept=".xlsx, .xls" onchange="importExcel(event)">
+    </div>
+
+    <div class="bg-white p-3 rounded-4 shadow-sm mb-4">
+        <div class="position-relative mb-3">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" id="searchInput" class="form-control form-control-lg search-box" placeholder="Cari nama santri..." onkeyup="filterSantri()">
+        </div>
+        <div class="row g-2">
+            <div class="col-6">
+                <select id="filterKelas" class="form-select filter-select" onchange="filterSantri()">
+                    <option value="">Semua Kelas</option>
+                </select>
+            </div>
+            <div class="col-6">
+                <select id="filterStatus" class="form-select filter-select" onchange="filterSantri()">
+                    <option value="all">Semua Status</option>
+                    <option value="lengkap">Lengkap</option>
+                    <option value="belum">Belum Lengkap</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div id="loader" class="text-center py-4">
+        <div class="spinner-border text-primary spinner-border-sm"></div>
+        <p class="small text-muted mt-2">Sinkronisasi Cloud...</p>
+    </div>
+
+    <div class="row" id="daftarSantri"></div>
+</div>
+
+<button class="btn btn-primary fab" data-bs-toggle="modal" data-bs-target="#modalTambah">
+    <i class="bi bi-plus-lg fs-3"></i>
+</button>
+
+<div class="modal fade" id="modalTambah" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered shadow">
+        <div class="modal-content border-0" style="border-radius: 20px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Input Data Santri</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Nama Lengkap</label>
+                    <input id="namaSantri" class="form-control bg-light border-0">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Kelas</label>
+                    <input id="kelasSantri" class="form-control bg-light border-0">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">WhatsApp Orang Tua</label>
+                    <input id="waOrtu" type="number" class="form-control bg-light border-0" placeholder="62xxx">
+                </div>
+            </div>
+            <div class="p-3 pt-0">
+                <button class="btn btn-primary w-100 py-3 fw-bold" onclick="simpanSantri()" style="border-radius: 12px;">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEdit" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered shadow">
+        <div class="modal-content border-0" style="border-radius: 20px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Edit Data Santri</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Nama Lengkap</label>
+                    <input id="editNama" class="form-control bg-light border-0">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Kelas</label>
+                    <input id="editKelas" class="form-control bg-light border-0">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">WhatsApp Orang Tua</label>
+                    <input id="editWa" type="number" class="form-control bg-light border-0">
+                </div>
+            </div>
+            <div class="p-3 pt-0">
+                <button class="btn btn-warning w-100 py-3 fw-bold" onclick="updateSantri()" style="border-radius: 12px;">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyC2OwjiOar5inkaZJ8PGEJ2N1cKwzD17LI",
+    authDomain: "checklit-data.firebaseapp.com",
+    projectId: "checklit-data",
+    storageBucket: "checklit-data.firebasestorage.app",
+    messagingSenderId: "391393842227",
+    appId: "1:391393842227:web:5d248e4fc5c0c161b2bf46"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+let currentData = [];
+
+/** * FUNGSI NOTIFIKASI TOAST 
+ */
+function showToast(pesan, tipe = "success") {
+    let bgColor = "linear-gradient(to right, #00b09b, #96c93d)"; // Default success (hijau)
+    if (tipe === "error") bgColor = "linear-gradient(to right, #ff5f6d, #ffc371)"; // Error (merah)
+    if (tipe === "warning") bgColor = "linear-gradient(to right, #f89b29, #feb47b)"; // Warning (orange)
+
+    Toastify({
+        text: pesan,
+        duration: 3000,
+        gravity: "top", 
+        position: "right", 
+        stopOnFocus: true, 
+        style: { background: bgColor, borderRadius: "12px", fontWeight: "600" }
+    }).showToast();
+}
+
+/* DATA HANDLER */
+db.collection("santri").orderBy("nama", "asc").onSnapshot(snapshot => {
+    document.getElementById("loader").style.display = "none";
+    const box = document.getElementById("daftarSantri");
+    
+    let htmlAccumulator = ""; 
+    currentData = [];
+    let total = 0;
+    let lengkapCount = 0;
+    let setKelas = new Set();
+
+    snapshot.forEach(doc => {
+        const s = doc.data();
+        const id = doc.id;
+        currentData.push({id, ...s});
+        
+        total++;
+        if(s.data_lengkap) lengkapCount++;
+        if(s.kelas) setKelas.add(s.kelas);
+
+        const berkas = s.berkas || {}; 
+        const labels = {kk:"KK", akta:"Akta Kelahiran", ijazah:"Ijazah", skl:"SKL", ktp_ayah:"KTP Ayah", ktp_ibu:"KTP Ibu"};
+        const jumlahTercentang = Object.values(berkas).filter(val => val === true).length;
+        const persentase = Math.round((jumlahTercentang / 6) * 100);
+
+        let barColor = "bg-danger";
+        if (persentase > 40) barColor = "bg-warning";
+        if (persentase > 80) barColor = "bg-info";
+        if (persentase === 100) barColor = "bg-success";
+
+        let kurang = [];
+        Object.keys(labels).forEach(key => { if(!berkas[key]) kurang.push(labels[key]); });
+        const pesanWA = `Assalamu'alaikum Warahmatullahi Wabarakatuh,\n\nAyah/Bunda dari an. *${s.nama}*, semoga senantiasa dalam keadaan sehat. 🙏\n\nKami dari administrasi kesantrian memohon bantuan Ayah/Bunda untuk melengkapi kekurangan berkas an. *${s.nama}* berikut:\n- _${kurang.join("_\n- _")}_\n\nBerkas tersebut sangat kami butuhkan untuk keperluan pendataan. Atas perhatian dan bantuannya, kami ucapkan terima kasih. Jazakumullaahu khairan katsiran. 😊`;
+
+        htmlAccumulator += `
+        <div class="col-12 item-santri" data-nama="${s.nama.toLowerCase()}" data-kelas="${s.kelas}" data-lengkap="${s.data_lengkap}">
+            <div class="card card-santri">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div>
+                            <h6 class="fw-bold mb-0">${s.nama} <span class="badge badge-kelas ms-1">${s.kelas}</span></h6>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-pencil-square text-primary fs-5" style="cursor:pointer" onclick="bukaModalEdit('${id}', '${s.nama}', '${s.kelas}', '${s.wa}')"></i>
+                            <i class="bi bi-trash text-danger fs-5" style="cursor:pointer" onclick="hapusSantri('${id}')"></i>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="progress flex-fill" style="height: 10px; border-radius: 10px; background-color: #e9ecef;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated ${barColor}" role="progressbar" style="width: ${persentase}%"></div>
+                        </div>
+                        <small class="fw-bold text-dark" style="font-size: 0.75rem; min-width: 35px;">${persentase}%</small>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="small text-muted" style="font-size: 0.75rem;">Kelengkapan Berkas:</span>
+                        ${s.data_lengkap ? 
+                            `<button class="btn btn-sm btn-outline-danger py-0" style="font-size: 0.7rem;" onclick="kosongkanSemuaBerkas('${id}')">
+                                <i class="bi bi-x-circle"></i> Kosongkan
+                            </button>` : 
+                            `<button class="btn btn-sm btn-outline-success py-0" style="font-size: 0.7rem;" onclick="centangSemuaBerkas('${id}')">
+                                <i class="bi bi-check-all"></i> Semua
+                            </button>`
+                        }
+                    </div>
+                    
+                    <div class="row g-2">
+                        <div class="col-6 col-md-4">${checkbox(id,'kk',berkas.kk,'KK')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'akta',berkas.akta,'Akta')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'ijazah',berkas.ijazah,'Ijazah')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'skl',berkas.skl,'SKL')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'ktp_ayah',berkas.ktp_ayah,'KTP Ayah')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'ktp_ibu',berkas.ktp_ibu,'KTP Ibu')}</div>
+                    </div>
+
+                    ${s.data_lengkap ? 
+                        `<div class="bg-success-subtle text-success small fw-bold mt-3 p-2 rounded-3 text-center">
+                            <i class="bi bi-check-circle-fill me-1"></i> Berkas Lengkap
+                        </div>` : 
+                        `<a href="https://wa.me/${s.wa}?text=${encodeURIComponent(pesanWA)}" target="_blank" class="btn wa-btn btn-sm mt-3 w-100 py-2">
+                            <i class="bi bi-whatsapp me-2"></i>Kirim Notif Kekurangan
+                        </a>`
+                    }
+                </div>
+            </div>
+        </div>`;
+    });
+
+    box.innerHTML = htmlAccumulator;
+    document.getElementById("statTotal").innerText = total;
+    document.getElementById("statLengkap").innerText = lengkapCount;
+    updateFilterKelas(setKelas);
+});
+
+function updateFilterKelas(setKelas) {
+    const select = document.getElementById("filterKelas");
+    const currentVal = select.value;
+    select.innerHTML = '<option value="">Semua Kelas</option>';
+    Array.from(setKelas).sort().forEach(kls => {
+        const opt = document.createElement("option");
+        opt.value = kls; opt.innerText = kls;
+        select.appendChild(opt);
+    });
+    select.value = currentVal;
+}
+
+function filterSantri() {
+    const searchVal = document.getElementById("searchInput").value.toLowerCase();
+    const kelasVal = document.getElementById("filterKelas").value;
+    const statusVal = document.getElementById("filterStatus").value;
+    const items = document.getElementsByClassName("item-santri");
+
+    Array.from(items).forEach(item => {
+        const nama = item.getAttribute("data-nama");
+        const kelas = item.getAttribute("data-kelas");
+        const isLengkap = item.getAttribute("data-lengkap") === "true";
+        const matchSearch = nama.includes(searchVal);
+        const matchKelas = kelasVal === "" || kelas === kelasVal;
+        let matchStatus = true;
+        if (statusVal === "lengkap") matchStatus = isLengkap;
+        if (statusVal === "belum") matchStatus = !isLengkap;
+
+        item.style.display = (matchSearch && matchKelas && matchStatus) ? "block" : "none";
+    });
+}
+
+function checkbox(id, field, val, label) {
+    return `
+    <div class="form-check p-0 m-0">
+        <input class="form-check-input ms-0" type="checkbox" style="float:none" ${val ? 'checked' : ''} 
+            onclick="updateStatus('${id}','${field}',this.checked)">
+        <label class="small ms-1" style="font-size:0.75rem">${label}</label>
+    </div>`;
+}
+
+function updateStatus(id, jenis, status) {
+    const ref = db.collection("santri").doc(id);
+    ref.update({ [`berkas.${jenis}`]: status }).then(async () => {
+        showToast("Status berkas diperbarui");
+        const doc = await ref.get();
+        const b = doc.data().berkas;
+        const lengkap = b.kk && b.akta && b.ijazah && b.skl && b.ktp_ayah && b.ktp_ibu;
+        ref.update({ data_lengkap: lengkap });
+    });
+}
+
+async function simpanSantri() {
+    const nama = document.getElementById("namaSantri").value.trim();
+    const kelas = document.getElementById("kelasSantri").value.trim();
+    let wa = document.getElementById("waOrtu").value.trim();
+
+    if (!nama || !kelas || !wa) return showToast("Mohon lengkapi semua data!", "warning");
+
+    // Format WA ke 62
+    if (wa.startsWith('0')) wa = '62' + wa.slice(1);
+
+    try {
+        const snapshot = await db.collection("santri").where("nama", "==", nama).where("kelas", "==", kelas).get();
+        if (!snapshot.empty) return showToast("Santri ini sudah terdaftar!", "error");
+
+        await db.collection("santri").add({
+            nama: nama, kelas: kelas, wa: wa, data_lengkap: false,
+            berkas: {kk:false, akta:false, ijazah:false, skl:false, ktp_ayah:false, ktp_ibu:false}
+        });
+
+        showToast("Data berhasil disimpan!");
+        bootstrap.Modal.getInstance(document.getElementById('modalTambah')).hide();
+        document.getElementById("namaSantri").value = "";
+        document.getElementById("kelasSantri").value = "";
+        document.getElementById("waOrtu").value = "";
+    } catch (e) { showToast("Sistem Error", "error"); }
+}
+
+function updateSantri() {
+    const id = document.getElementById("editId").value;
+    const nama = document.getElementById("editNama").value;
+    const kelas = document.getElementById("editKelas").value;
+    const wa = document.getElementById("editWa").value;
+
+    if (!nama || !kelas || !wa) return showToast("Data tidak boleh kosong!", "warning");
+
+    db.collection("santri").doc(id).update({ nama, kelas, wa }).then(() => {
+        showToast("Perubahan disimpan");
+        bootstrap.Modal.getInstance(document.getElementById('modalEdit')).hide();
+    });
+}
+
+function bukaModalEdit(id, nama, kelas, wa) {
+    document.getElementById("editId").value = id;
+    document.getElementById("editNama").value = nama;
+    document.getElementById("editKelas").value = kelas;
+    document.getElementById("editWa").value = wa;
+    new bootstrap.Modal(document.getElementById('modalEdit')).show();
+}
+
+function hapusSantri(id) {
+    if(confirm("Hapus data ini?")) {
+        db.collection("santri").doc(id).delete().then(() => showToast("Data terhapus", "warning"));
+    }
+}
+
+async function hapusSemuaSantri() {
+    if (!confirm("Hapus SEMUA data?")) return;
+    const validasi = prompt("Ketik 'HAPUS' untuk konfirmasi:");
+    if (validasi === "HAPUS") {
+        const snapshot = await db.collection("santri").get();
+        const batch = db.batch();
+        snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+        await batch.commit();
+        showToast("Semua data berhasil dihapus!", "error");
+    }
+}
+
+async function importExcel(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    document.getElementById("loader").style.display = "block";
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            
+            const snapshot = await db.collection("santri").get();
+            const existingData = snapshot.docs.map(doc => ({
+                nama: doc.data().nama.toLowerCase().trim(),
+                kelas: doc.data().kelas.toString().toLowerCase().trim()
+            }));
+
+            let batch = db.batch();
+            let countImported = 0;
+
+            for (const row of json) {
+                const namaBaru = row['Nama Lengkap'] ? row['Nama Lengkap'].toString().trim() : null;
+                const kelasBaru = row['Kelas'] ? row['Kelas'].toString().trim() : "";
+                let waBaru = row['WhatsApp Orang Tua'] ? row['WhatsApp Orang Tua'].toString().trim() : "";
+                if (waBaru.startsWith('0')) waBaru = '62' + waBaru.slice(1);
+
+                if (namaBaru) {
+                    const isDuplicate = existingData.some(ex => ex.nama === namaBaru.toLowerCase() && ex.kelas === kelasBaru.toLowerCase());
+                    if (!isDuplicate) {
+                        const ref = db.collection("santri").doc();
+                        batch.set(ref, {
+                            nama: namaBaru, kelas: kelasBaru, wa: waBaru, data_lengkap: false,
+                            berkas: {kk:false, akta:false, ijazah:false, skl:false, ktp_ayah:false, ktp_ibu:false}
+                        });
+                        countImported++;
+                    }
+                }
+            }
+
+            if (countImported > 0) {
+                await batch.commit();
+                showToast(`${countImported} data berhasil diimport!`);
+            } else {
+                showToast("Tidak ada data baru", "warning");
+            }
+        } catch (error) { showToast("Gagal import file", "error"); }
+        finally { 
+            document.getElementById("loader").style.display = "none";
+            event.target.value = ''; 
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function exportExcel() {
+    const reportData = currentData.map(s => ({
+        "Nama Lengkap": s.nama, "Kelas": s.kelas, "WhatsApp": s.wa, "Status": s.data_lengkap ? "LENGKAP" : "BELUM"
+    }));
+    const ws = XLSX.utils.json_to_sheet(reportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Santri");
+    XLSX.writeFile(wb, `Laporan_Santri.xlsx`);
+    showToast("Laporan Excel berhasil diunduh");
+}
+
+async function centangSemuaBerkas(id) {
+    db.collection("santri").doc(id).update({
+        "berkas.kk":true, "berkas.akta":true, "berkas.ijazah":true, "berkas.skl":true, "berkas.ktp_ayah":true, "berkas.ktp_ibu":true, "data_lengkap":true
+    }).then(() => showToast("Semua berkas ditandai lengkap"));
+}
+
+async function kosongkanSemuaBerkas(id) {
+    db.collection("santri").doc(id).update({
+        "berkas.kk":false, "berkas.akta":false, "berkas.ijazah":false, "berkas.skl":false, "berkas.ktp_ayah":false, "berkas.ktp_ibu":false, "data_lengkap":false
+    }).then(() => showToast("Status berkas dikosongkan", "warning"));
+}
+
+
+function kirimRekapGrup() {
+    // --- KONFIGURASI TAMBAHAN ---
+    const namaAdmin = "Admin Kesantrian"; 
+    const linkForm = "https://bit.ly/UploadBerkasSantri"; 
+    // ----------------------------
+
+    const items = Array.from(document.getElementsByClassName("item-santri")).filter(item => item.style.display !== "none");
+
+    if (items.length === 0) return showToast("Tidak ada data yang ditampilkan untuk direkap", "warning");
+
+    let teksLengkap = "*✅ BERKAS SUDAH LENGKAP:*\n";
+    let teksBelum = "*⚠️ MOHON SEGERA DILENGKAPI:*\n";
+    
+    let jmlLengkap = 0;
+    let jmlBelum = 0;
+
+    const labels = {kk:"KK", akta:"Akta", ijazah:"Ijazah", skl:"SKL", ktp_ayah:"KTP Ayah", ktp_ibu:"KTP Ibu"};
+
+    items.forEach((item) => {
+        const namaAttr = item.getAttribute("data-nama");
+        const kelasAttr = item.getAttribute("data-kelas");
+        const s = currentData.find(d => d.nama.toLowerCase() === namaAttr && d.kelas === kelasAttr);
+
+        if (s) {
+            if (s.data_lengkap) {
+                jmlLengkap++;
+                teksLengkap += `${jmlLengkap}. ${s.nama} (${s.kelas})\n`;
+            } else {
+                jmlBelum++;
+                let kurang = [];
+                const berkas = s.berkas || {};
+                Object.keys(labels).forEach(key => {
+                    if (!berkas[key]) kurang.push(labels[key]);
+                });
+                
+                teksBelum += `${jmlBelum}. *${s.nama}* (${s.kelas})\n    _(Kekurangan: ${kurang.join(", ")})_\n`;
+            }
+        }
+    });
+
+    const filterKelas = document.getElementById("filterKelas").value;
+    const judulKelas = filterKelas ? `KELAS ${filterKelas.toUpperCase()}` : "SELURUH SANTRI";
+
+    // MENYUSUN PESAN FINAL DENGAN BAHASA LEBIH SOPAN
+    const salam = `Assalamu'alaikum Warahmatullahi Wabarakatuh,\n\n`;
+    
+    const pembuka = `Bapak/Ibu Orang Tua Santri yang kami muliakan, berikut kami sampaikan update *REKAP KELENGKAPAN BERKAS ${judulKelas}* per tanggal ${new Date().toLocaleDateString('id-ID')}.\n\n`;
+    
+    const isiLengkap = jmlLengkap > 0 ? teksLengkap + "\n" : "";
+    const isiBelum = jmlBelum > 0 ? teksBelum : "";
+    
+    const penutup = `\n--------------------------\n` +
+                    `📌 *INFORMASI TAMBAHAN:*\n` +
+                    `Bagi Bapak/Ibu yang berkas putera-puterinya belum lengkap, mohon kesediaannya untuk mengirimkan dokumen tersebut melalui:\n` +
+                    `1. Form Online: ${linkForm}\n` +
+                    `2. Atau titip langsung ke Sekretariat.\n\n` +
+                    `Demikian informasi ini kami sampaikan. Kami memohon maaf apabila ada kata yang kurang berkenan. Terimakasih banyak atas kerjasamanya.\n\n` +
+                    `*Jazakumullaahu khairan katsiran.*\n\n` +
+                    `Salam hangat,\n` +
+                    `*${namaAdmin}*`;
+
+    const ringkasan = `\n\n_(Total data: ${items.length} santri)_`;
+    
+    const pesanFinal = encodeURIComponent(salam + pembuka + isiLengkap + isiBelum + penutup + ringkasan);
+    
+    window.open(`https://wa.me/?text=${pesanFinal}`, '_blank');
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
