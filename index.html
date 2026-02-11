@@ -1130,42 +1130,74 @@ function kosongkanSemuaBerkas(id) {
 function kirimRekapGrup() {
     if (filteredData.length === 0) return showToast("Tidak ada data untuk direkap", "warning");
 
+    // 1. Deteksi Filter Kelas untuk Judul Pesan
+    const filterKelasVal = document.getElementById("filterKelas").value;
+    const judulKelas = filterKelasVal ? `KELAS: ${filterKelasVal.toUpperCase()}` : "SEMUA KELAS";
+
     let rincianSantri = "";
-    filteredData.forEach((s, index) => {
+    let nomor = 1;
+
+    filteredData.forEach((s) => {
+        // Hanya masukkan yang belum lengkap
         if (!s.data_lengkap) {
-            // Hitung apa saja yang kurang
             let kurang = [];
-            const labels = { kk: "KK", akta: "Akta", ijazah: "Ijazah", skl: "SKL", ktp_ayah: "KTP Ayah", ktp_ibu: "KTP Ibu", foto: "Foto" };
+            const labels = { 
+                kk: "KK", 
+                akta: "Akta", 
+                ijazah: "Ijazah", 
+                skl: "SKL", 
+                ktp_ayah: "KTP Ayah", 
+                ktp_ibu: "KTP Ibu", 
+                foto: "Foto" 
+            };
+            
             Object.keys(labels).forEach(key => {
                 if (!s.berkas || !s.berkas[key]) kurang.push(labels[key]);
             });
-            
-            // Format ringkas: Nama (Kelas) - Kurang: KK, Akta
-            rincianSantri += `${index + 1}. *${s.nama}* (${s.kelas}) - Kurang: ${kurang.join(", ")}\n`;
+
+            // Tampilan per santri yang lebih rapi dengan bullet point
+            rincianSantri += `*${nomor}. ${s.nama}* (${s.kelas})\n   └ ⚠️ Kurang: _${kurang.join(", ")}_\n\n`;
+            nomor++;
         }
     });
 
     if (rincianSantri === "") return showToast("Semua santri di daftar ini sudah lengkap", "success");
 
-    const pesanGrup = `Assalamu'alaikum Warahmatullahi Wabarakatuh.
+    // 2. Draft Pesan dengan Desain Profesional
+    const pesanGrup = `*LAPORAN ADMINISTRASI SANTRI*
+*PONPES IBNUL JAUZY*
+--------------------------------------------
+📍 *DAFTAR: ${judulKelas}*
+📅 Per Tanggal: ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}
+--------------------------------------------
 
-Segala puji bagi Allah, Shalawat dan salam semoga tercurah kepada Rasulullah.
+Assalamu'alaikum Warahmatullahi Wabarakatuh.
 
-Berikut kami sampaikan rincian kekurangan berkas administrasi santri Pondok Ibnul Jauzy:
+Ayah/Bunda yang dirahmati Allah, berikut adalah daftar santri yang belum melengkapi berkas administrasi:
 
-${rincianSantri}
-*PILIHAN PENGIRIMAN:*
-- Online: https://docs.google.com/forms/d/e/1FAIpQLSfAuK1jrBSW62iFleEWyxZO7m96ZKsK3_BbXNdTkzwf2mMUeQ/viewform
-- Langsung: Diantar ke Bagian Administrasi Pondok Ibnul Jauzy.
+${rincianSantri}---
+📲 *PILIHAN PENGIRIMAN:*
+1️⃣ *ONLINE:* https://docs.google.com/forms/d/e/1FAIpQLSfAuK1jrBSW62iFleEWyxZO7m96ZKsK3_BbXNdTkzwf2mMUeQ/viewform
+2️⃣ *LANGSUNG:* Diantar ke Bagian Administrasi Pondok.
 
-Mohon bantuan Ayah/Bunda untuk segera melengkapinya. Demikian kami sampaikan.
+Mohon bantuan Ayah/Bunda untuk segera melengkapinya demi tertibnya pendataan. 
 
 Jazakumullahu Khairan Katsiran.
 
 Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
 
-    // Kirim ke WhatsApp (Membuka aplikasi WA dengan pesan yang sudah siap)
-    window.open(`https://wa.me/?text=${encodeURIComponent(pesanGrup)}`, '_blank');
+    // 3. Link Adaptif untuk Mobile (Android/iOS) dan Desktop
+    // Menggunakan api.whatsapp.com seringkali lebih stabil untuk 'share' ke grup di perangkat mobile
+    const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanGrup)}`;
+    
+    // Membuka jendela baru
+    const win = window.open(waUrl, '_blank');
+    if (win) {
+        win.focus();
+    } else {
+        // Fallback jika popup terblokir
+        location.href = waUrl;
+    }
 }
 
 
