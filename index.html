@@ -796,18 +796,52 @@ function hapusSantri(id) {
     }
 }
 
+
 function hapusSemuaSantri() {
-    // Panggil fungsi verifikasi PIN, baru eksekusi penghapusan
+    // Ambil nilai filter kelas saat ini
+    const kelasTerpilih = document.getElementById("filterKelas").value;
+    const keteranganAksi = kelasTerpilih ? `data santri KELAS ${kelasTerpilih}` : "SELURUH data santri";
+
     mintaPin(async () => {
-        if (!confirm("Semua data akan dihapus secara permanen. Lanjutkan?")) return;
+        // Konfirmasi tahap 1
+        if (!confirm(`PERINGATAN! Anda akan menghapus ${keteranganAksi} secara permanen. Lanjutkan?`)) return;
         
-        const validasi = prompt("Ketik 'HAPUS' untuk konfirmasi akhir:");
+        // Konfirmasi tahap 2 (Ketik konfirmasi)
+        const validasi = prompt(`Ketik 'HAPUS' untuk konfirmasi menghapus ${keteranganAksi}:`);
+        
         if (validasi === "HAPUS") {
-            const snapshot = await db.collection("santri").get();
-            const batch = db.batch();
-            snapshot.docs.forEach((doc) => batch.delete(doc.ref));
-            await batch.commit();
-            showToast("Semua data berhasil dibersihkan!", "error");
+            try {
+                let query;
+                
+                // Jika ada kelas yang difilter, buat query khusus kelas tersebut
+                if (kelasTerpilih) {
+                    query = await db.collection("santri").where("kelas", "==", kelasTerpilih).get();
+                } else {
+                    // Jika tidak ada filter, ambil semua data
+                    query = await db.collection("santri").get();
+                }
+
+                if (query.empty) {
+                    showToast("Tidak ada data yang bisa dihapus", "warning");
+                    return;
+                }
+
+                const batch = db.batch();
+                query.docs.forEach((doc) => batch.delete(doc.ref));
+                
+                await batch.commit();
+                
+                const pesanSukses = kelasTerpilih 
+                    ? `Data santri kelas ${kelasTerpilih} berhasil dihapus!` 
+                    : "Seluruh data santri berhasil dibersihkan!";
+                
+                showToast(pesanSukses, "error");
+            } catch (error) {
+                console.error("Error saat menghapus:", error);
+                showToast("Gagal menghapus data!", "error");
+            }
+        } else {
+            showToast("Konfirmasi salah, penghapusan dibatalkan.", "warning");
         }
     });
 }
@@ -897,51 +931,85 @@ async function eksekusiImport(sheetName) {
     
     try {
         const worksheet = tempWorkbook.Sheets[sheetName];
-        // Mengubah sheet menjadi JSON
         const json = XLSX.utils.sheet_to_json(worksheet);
         
-        // Ambil data yang sudah ada di Firebase untuk cek duplikat
+        // 1. Ambil data eksis untuk cek duplikat
         const snapshot = await db.collection("santri").get();
         const existingData = snapshot.docs.map(doc => ({
             nama: doc.data().nama ? doc.data().nama.toLowerCase().trim() : "",
             kelas: doc.data().kelas ? doc.data().kelas.toString().toLowerCase().trim() : ""
         }));
 
+        // Fungsi pembantu: Anggap '1', 'y', 'ada', atau 'x' sebagai TRUE
+        const cekStatus = (val) => {
+            if (!val) return false;
+            const v = val.toString().toLowerCase().trim();
+            return ['1', 'y', 'ya', 'v', 'ada', 'lengkap', 'x', 'true'].includes(v);
+        };
+
         let batch = db.batch();
         let countImported = 0;
         let operationCount = 0; 
+        let barisKelasKosong = [];
 
+        // --- TAHAP 1: VALIDASI KELAS ---
+        for (let i = 0; i < json.length; i++) {
+            const row = json[i];
+            const nama = row['Nama Lengkap'] ? row['Nama Lengkap'].toString().trim() : null;
+            const kelas = row['Kelas'] ? row['Kelas'].toString().trim() : "";
+            
+            // Jika ada Nama tapi Kelas Kosong, catat barisnya
+            if (nama && (!kelas || kelas === "")) {
+                barisKelasKosong.push(i + 2); // i+2 karena index 0 dan header excel
+            }
+        }
+
+        if (barisKelasKosong.length > 0) {
+            alert(`❌ IMPORT DIBATALKAN!\nKolom 'Kelas' kosong pada baris: ${barisKelasKosong.join(", ")}.\nMohon lengkapi data di Excel.`);
+            return; // Berhenti total
+        }
+
+        // --- TAHAP 2: PROSES DATA ---
         for (const row of json) {
-            // Sesuaikan key ['Nama Lengkap'] dll dengan header di file Excel kamu
             const namaBaru = row['Nama Lengkap'] ? row['Nama Lengkap'].toString().trim() : null;
             const kelasBaru = row['Kelas'] ? row['Kelas'].toString().trim() : "";
             let waBaru = row['WhatsApp Orang Tua'] ? row['WhatsApp Orang Tua'].toString().trim() : "";
             
-            // Format nomor WA ke 62
             if (waBaru.startsWith('0')) waBaru = '62' + waBaru.slice(1);
 
             if (namaBaru) {
+                // Cek Duplikat (Nama + Kelas)
                 const isDuplicate = existingData.some(ex => 
                     ex.nama === namaBaru.toLowerCase() && 
                     ex.kelas === kelasBaru.toLowerCase()
                 );
 
                 if (!isDuplicate) {
+                    const berkas = {
+                        kk: cekStatus(row['KK']),
+                        akta: cekStatus(row['Akta']),
+                        ijazah: cekStatus(row['Ijazah']),
+                        skl: cekStatus(row['SKL']),
+                        ktp_ayah: cekStatus(row['KTP Ayah']),
+                        ktp_ibu: cekStatus(row['KTP Ibu']),
+                        foto: cekStatus(row['Foto Santri'])
+                    };
+
+                    // Hitung otomatis jika semua berkas true
+                    const isLengkap = Object.values(berkas).every(v => v === true);
+
                     const ref = db.collection("santri").doc();
                     batch.set(ref, {
                         nama: namaBaru, 
                         kelas: kelasBaru, 
                         wa: waBaru, 
-                        data_lengkap: false,
-                        berkas: {
-    kk: false, akta: false, ijazah: false, 
-    skl: false, ktp_ayah: false, ktp_ibu: false, 
-    foto: false}
+                        data_lengkap: isLengkap,
+                        berkas: berkas
                     });
+
                     countImported++;
                     operationCount++;
 
-                    // Batasan Batch Firestore (Maks 500)
                     if (operationCount >= 500) {
                         await batch.commit();
                         batch = db.batch();
@@ -951,15 +1019,12 @@ async function eksekusiImport(sheetName) {
             }
         }
 
-        // Commit sisa batch jika ada
-        if (operationCount > 0) {
-            await batch.commit();
-        }
+        if (operationCount > 0) await batch.commit();
 
         if (countImported > 0) {
-            showToast(`${countImported} data dari sheet [${sheetName}] berhasil diimport!`);
+            showToast(`${countImported} data berhasil diimport!`);
         } else {
-            showToast("Tidak ada data baru (semua duplikat atau sheet kosong)", "warning");
+            showToast("Tidak ada data baru (semua duplikat)", "warning");
         }
 
     } catch (error) {
@@ -967,7 +1032,10 @@ async function eksekusiImport(sheetName) {
         showToast("Proses import gagal", "error");
     } finally {
         document.getElementById("loader").style.display = "none";
-        tempWorkbook = null; // Hapus data sementara dari memori
+        tempWorkbook = null;
+        // Tutup modal jika ada
+        const modalPilih = bootstrap.Modal.getInstance(document.getElementById('modalPilihSheet'));
+        if(modalPilih) modalPilih.hide();
     }
 }
 
