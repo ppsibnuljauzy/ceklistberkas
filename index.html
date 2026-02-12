@@ -12,6 +12,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body {
@@ -191,21 +192,34 @@
 </nav>
 
 <div class="container mt-3">
-    <div class="row g-2 mb-4">
-        <div class="col-6">
-            <div class="stats-card border-start border-primary border-4 shadow-sm">
-                <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Total Santri</div>
-                <div class="fw-bold h4 mb-0" id="statTotal">0</div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="stats-card border-start border-success border-4 shadow-sm">
-                <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Berkas Lengkap</div>
-                <div class="fw-bold h4 mb-0 text-success" id="statLengkap">0</div>
-            </div>
+<div class="row g-2 mb-4">
+    <div class="col-4">
+        <div class="stats-card border-start border-primary border-4 shadow-sm text-center">
+            <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.6rem;">Total</div>
+            <div class="fw-bold h5 mb-0" id="statTotal">0</div>
         </div>
     </div>
-    
+    <div class="col-4">
+        <div class="stats-card border-start border-success border-4 shadow-sm text-center">
+            <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.6rem;">Lengkap</div>
+            <div class="fw-bold h5 mb-0 text-success" id="statLengkap">0</div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="stats-card border-start border-danger border-4 shadow-sm text-center">
+            <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.6rem;">Belum</div>
+            <div class="fw-bold h5 mb-0 text-danger" id="statBelum">0</div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white p-3 rounded-4 shadow-sm mb-4">
+    <h6 class="fw-bold small mb-3 text-muted text-uppercase"><i class="bi bi-pie-chart-fill me-2"></i>Visualisasi Kelengkapan</h6>
+    <div style="position: relative; height:200px; width:100%">
+        <canvas id="statusChart"></canvas>
+    </div>
+</div>
+ 
     <div class="d-flex gap-2 mb-3">
         <button class="btn btn-success btn-excel flex-fill" onclick="document.getElementById('fileImport').click()">
             <i class="bi bi-file-earmark-excel me-1"></i> Import
@@ -474,6 +488,7 @@ function logout() {
 
 
 let currentData = [];
+let statusChart = null;
 
 
 let fungsiSetelahPinBenar = null;
@@ -536,13 +551,56 @@ db.collection("santri").orderBy("nama", "asc").onSnapshot(snapshot => {
         if(s.kelas) setKelas.add(s.kelas);
     });
 
-    document.getElementById("statTotal").innerText = currentData.length;
+    const total = currentData.length;
+    const belumLengkap = total - lengkapCount;
+
+    // Update Angka Statistik
+    document.getElementById("statTotal").innerText = total;
     document.getElementById("statLengkap").innerText = lengkapCount;
+    document.getElementById("statBelum").innerText = belumLengkap;
+
     updateFilterKelas(setKelas);
-    
-    // Jalankan filter pertama kali untuk mengisi daftar
+    updateChart(lengkapCount, belumLengkap); // Panggil fungsi chart
     filterSantri(); 
 });
+
+// Fungsi untuk membuat/update Chart
+function updateChart(lengkap, belum) {
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    
+    if (statusChart) {
+        statusChart.destroy(); // Hapus chart lama sebelum membuat yang baru
+    }
+
+    statusChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Lengkap', 'Belum Lengkap'],
+            datasets: [{
+                data: [lengkap, belum],
+                backgroundColor: ['#198754', '#dc3545'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        font: { size: 12, family: 'Plus Jakarta Sans' }
+                    }
+                }
+            },
+            cutout: '70%' // Membuat doughnut lebih tipis dan modern
+        }
+    });
+}
+
 
 function filterSantri() {
     const searchVal = document.getElementById("searchInput").value.toLowerCase();
