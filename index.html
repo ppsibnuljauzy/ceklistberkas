@@ -463,7 +463,7 @@ const db = firebase.firestore();
 function applyUserRestrictions() {
     const userRole = sessionStorage.getItem("userRole");
     
-    // Jika login sebagai user (PIN 456), sembunyikan fitur modifikasi
+    // Jika login sebagai user (PIN 123), sembunyikan fitur modifikasi
     if (userRole === "user") {
         // Daftar selector tombol yang hanya boleh dilihat Admin
         const adminElements = [
@@ -501,12 +501,12 @@ function checkAccess() {
     // Jika belum login, minta PIN
     const aksesPin = prompt("Masukkan PIN Akses:");
     
-    if (aksesPin === "123") { // PIN Admin
+    if (aksesPin === "456") { // PIN Admin
         sessionStorage.setItem("isLoggedIn", "true");
         sessionStorage.setItem("userRole", "admin");
         location.reload(); // Refresh untuk menerapkan role
         return true;
-    } else if (aksesPin === "456") { // PIN User Biasa
+    } else if (aksesPin === "123") { // PIN User Biasa
         sessionStorage.setItem("isLoggedIn", "true");
         sessionStorage.setItem("userRole", "user");
         applyUserRestrictions(); // Langsung terapkan pembatasan
@@ -542,7 +542,7 @@ let statusChart = null;
 
 
 let fungsiSetelahPinBenar = null;
-const PIN_ADMIN = "123"; 
+const PIN_ADMIN = "456"; 
 
 function mintaPin(aksi) {
     fungsiSetelahPinBenar = aksi;
