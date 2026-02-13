@@ -757,13 +757,13 @@ function renderTable() {
                     </div>
                     
                     <div class="row g-2">
-                        <div class="col-6 col-md-4">${checkbox(id,'kk',berkas.kk,'KK')}</div>
-                        <div class="col-6 col-md-4">${checkbox(id,'akta',berkas.akta,'Akta')}</div>
-                        <div class="col-6 col-md-4">${checkbox(id,'ijazah',berkas.ijazah,'Ijazah')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'kk',berkas.kk,'Fc. KK')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'akta',berkas.akta,'Fc. Akta')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'ijazah',berkas.ijazah,'Fc. Ijazah Terakhir')}</div>
                         <div class="col-6 col-md-4">${checkbox(id,'skl',berkas.skl,'SKL')}</div>
-                        <div class="col-6 col-md-4">${checkbox(id,'ktp_ayah',berkas.ktp_ayah,'KTP Ayah')}</div>
-                        <div class="col-6 col-md-4">${checkbox(id,'ktp_ibu',berkas.ktp_ibu,'KTP Ibu')}</div>
-                        <div class="col-6 col-md-4">${checkbox(id,'foto',berkas.foto,'Foto')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'ktp_ayah',berkas.ktp_ayah,'Fc. KTP Ayah')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'ktp_ibu',berkas.ktp_ibu,'Fc. KTP Ibu')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'foto',berkas.foto,'Pas Foto')}</div>
                     </div>
 
                     ${s.data_lengkap ? 
@@ -1208,13 +1208,13 @@ function exportExcel() {
             "Nama Santri": s.nama,
             "Kelas": s.kelas,
             "WhatsApp": s.wa || "-",
-            "KK": s.berkas?.kk ? "Lengkap" : "Belum",
-            "Akta": s.berkas?.akta ? "Lengkap" : "Belum",
-            "Ijazah": s.berkas?.ijazah ? "Lengkap" : "Belum",
+            "Fc. KK": s.berkas?.kk ? "Lengkap" : "Belum",
+            "Fc. Akta": s.berkas?.akta ? "Lengkap" : "Belum",
+            "Fc. Ijazah Terakhir": s.berkas?.ijazah ? "Lengkap" : "Belum",
             "SKL": s.berkas?.skl ? "Lengkap" : "Belum",
-            "KTP Ayah": s.berkas?.ktp_ayah ? "Lengkap" : "Belum",
-            "KTP Ibu": s.berkas?.ktp_ibu ? "Lengkap" : "Belum",
-            "Foto": s.berkas?.foto ? "Lengkap" : "Belum",
+            "Fc. KTP Ayah": s.berkas?.ktp_ayah ? "Lengkap" : "Belum",
+            "Fc. KTP Ibu": s.berkas?.ktp_ibu ? "Lengkap" : "Belum",
+            "Pas Foto": s.berkas?.foto ? "Lengkap" : "Belum",
             "Status Akhir": s.data_lengkap ? "LENGKAP" : "BELUM LENGKAP"
         };
     });
@@ -1298,13 +1298,13 @@ function kirimRekapGrup() {
         if (!s.data_lengkap) {
             let kurang = [];
             const labels = { 
-                kk: "KK", 
-                akta: "Akta", 
-                ijazah: "Ijazah", 
+                kk: "Fc. KK", 
+                akta: "Fc. Akta", 
+                ijazah: "Fc. Ijazah Terakhir", 
                 skl: "SKL", 
-                ktp_ayah: "KTP Ayah", 
-                ktp_ibu: "KTP Ibu", 
-                foto: "Foto" 
+                ktp_ayah: "Fc. KTP Ayah", 
+                ktp_ibu: "Fc. KTP Ibu", 
+                foto: "Pas Foto" 
             };
             
             Object.keys(labels).forEach(key => {
