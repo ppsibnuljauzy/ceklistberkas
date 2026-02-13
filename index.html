@@ -458,25 +458,75 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-// Fungsi untuk mengecek status akses saat halaman dimuat
+
+// 1. Fungsi untuk membatasi akses (Taruh di atas checkAccess)
+function applyUserRestrictions() {
+    const userRole = sessionStorage.getItem("userRole");
+    
+    // Jika login sebagai user (PIN 456), sembunyikan fitur modifikasi
+    if (userRole === "user") {
+        // Daftar selector tombol yang hanya boleh dilihat Admin
+        const adminElements = [
+            '.btn-danger',          // Tombol Hapus Semua
+            '.btn-success',         // Tombol Import
+            '.btn-warning',         // Tombol Naik Kelas
+            '.fab',                 // Tombol Tambah Floating
+            '.bi-pencil-square',    // Icon Edit di baris santri
+            '.bi-trash'             // Icon Hapus di baris santri
+        ];
+
+        adminElements.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                el.style.setProperty('display', 'none', 'important');
+            });
+        });
+        
+        console.log("Akses dibatasi: Mode Viewer Aktif");
+    }
+}
+
+// 2. Fungsi Pengecekan Akses Utama
 function checkAccess() {
     const sessionAkses = sessionStorage.getItem("isLoggedIn");
-    
-    if (sessionAkses !== "true") {
-        const aksesPin = prompt("Masukkan PIN Akses:");
-        if (aksesPin === "123") {
-            sessionStorage.setItem("isLoggedIn", "true");
-        } else {
-            alert("PIN Salah! Anda tidak diizinkan mengakses halaman ini.");
-            document.body.innerHTML = "<h1 style='text-align:center; margin-top:50px;'>Akses Ditolak</h1>";
-            return false;
-        }
+    const userRole = sessionStorage.getItem("userRole");
+
+    // Jika sudah ada session login
+    if (sessionAkses === "true") {
+        // Gunakan setTimeout agar DOM selesai loading sebelum menyembunyikan elemen
+        setTimeout(applyUserRestrictions, 100);
+        return true;
     }
-    return true;
+
+    // Jika belum login, minta PIN
+    const aksesPin = prompt("Masukkan PIN Akses:");
+    
+    if (aksesPin === "123") { // PIN Admin
+        sessionStorage.setItem("isLoggedIn", "true");
+        sessionStorage.setItem("userRole", "admin");
+        location.reload(); // Refresh untuk menerapkan role
+        return true;
+    } else if (aksesPin === "456") { // PIN User Biasa
+        sessionStorage.setItem("isLoggedIn", "true");
+        sessionStorage.setItem("userRole", "user");
+        applyUserRestrictions(); // Langsung terapkan pembatasan
+        return true;
+    } else {
+        alert("PIN Salah!");
+        document.body.innerHTML = `
+            <div style="text-align:center; margin-top:100px; font-family:sans-serif;">
+                <h1 style="color:#dc3545;">Akses Ditolak</h1>
+                <p>Silakan hubungi administrator untuk mendapatkan PIN.</p>
+                <button onclick="location.reload()" style="padding:10px 20px; border-radius:8px; border:none; background:#0d6efd; color:white; cursor:pointer;">Coba Lagi</button>
+            </div>`;
+        return false;
+    }
 }
 
 // Jalankan pengecekan
 checkAccess();
+
+
 
 // Fungsi Log Out
 function logout() {
@@ -636,7 +686,6 @@ function renderTable() {
 
     let htmlAccumulator = "";
     
-    // Mapping label untuk teks WhatsApp
     const labels = {
         kk: "KK", 
         akta: "Akta Kelahiran", 
@@ -652,7 +701,6 @@ function renderTable() {
         const isWaKosong = !s.wa || s.wa.toString().trim() === "" || s.wa.toString() === "0";
         const berkas = s.berkas || {}; 
         
-        // Hitung Persentase & Warna Bar
         const jumlahTercentang = Object.values(berkas).filter(val => val === true).length;
         const persentase = Math.round((jumlahTercentang / 7) * 100);
 
@@ -661,32 +709,13 @@ function renderTable() {
         if (persentase > 80) barColor = "bg-info";
         if (persentase === 100) barColor = "bg-success";
 
-        // Logic Pesan WhatsApp
         let kurang = [];
         Object.keys(labels).forEach(key => { 
             if(!berkas[key]) kurang.push(labels[key]); 
         });
         const listKekurangan = kurang.map(item => `    ┕  ${item}`).join("\n");
 
-const pesanWA = `Assalamu'alaikum Warahmatullahi Wabarakatuh.
-
-Segala puji bagi Allah, Shalawat dan salam semoga tercurah kepada Rasulullah.
-
-Ayah/Bunda dari an. *${s.nama}*, mohon maaf mengganggu waktunya. Melalui pesan ini, kami bermaksud menginfokan bahwa masih terdapat beberapa dokumen administrasi santri yang perlu dilengkapi demi tertibnya pendataan:
-
-*BERKAS YANG DIBUTUHKAN:*
-${listKekurangan}
-
-*PILIHAN PENGIRIMAN:*
-1. Secara Online melalui link berikut: 
-https://bit.ly/rekap_berkas
-2. Menyerahkan fisik berkas langsung ke Kantor Administrasi Pondok Ibnul Jauzy.
-
-Demikian informasi ini kami sampaikan. Atas perhatian dan kerjasama Ayah/Bunda, kami haturkan:
-
-Jazakumullahu Khairan Katsiran.
-
-Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
+        const pesanWA = `Assalamu'alaikum Warahmatullahi Wabarakatuh. Ayah/Bunda dari an. *${s.nama}*, masih terdapat beberapa berkas yang perlu dilengkapi...`;
 
         htmlAccumulator += `
         <div class="col-12 item-santri">
@@ -701,8 +730,8 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
                             </h6>
                         </div>
                         <div class="d-flex gap-3">
-                            <i class="bi bi-pencil-square text-primary fs-5" style="cursor:pointer" onclick="bukaModalEdit('${id}', '${s.nama}', '${s.kelas}', '${s.wa}')"></i>
-                            <i class="bi bi-trash text-danger fs-5" style="cursor:pointer" onclick="hapusSantri('${id}')"></i>
+                            <i class="bi bi-pencil-square text-primary fs-5 btn-admin-only" style="cursor:pointer" onclick="bukaModalEdit('${id}', '${s.nama}', '${s.kelas}', '${s.wa}')"></i>
+                            <i class="bi bi-trash text-danger fs-5 btn-admin-only" style="cursor:pointer" onclick="hapusSantri('${id}')"></i>
                         </div>
                     </div>
 
@@ -715,14 +744,16 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="small text-muted" style="font-size: 0.75rem;">Kelengkapan Berkas:</span>
-                        ${s.data_lengkap ? 
-                            `<button class="btn btn-sm btn-outline-danger py-0" style="font-size: 0.7rem;" onclick="kosongkanSemuaBerkas('${id}')">
-                                <i class="bi bi-x-circle"></i> Kosongkan
-                            </button>` : 
-                            `<button class="btn btn-sm btn-outline-success py-0" style="font-size: 0.7rem;" onclick="centangSemuaBerkas('${id}')">
-                                <i class="bi bi-check-all"></i> Semua
-                            </button>`
-                        }
+                        <div class="btn-admin-only">
+                            ${s.data_lengkap ? 
+                                `<button class="btn btn-sm btn-outline-danger py-0" style="font-size: 0.7rem;" onclick="kosongkanSemuaBerkas('${id}')">
+                                    <i class="bi bi-x-circle"></i> Kosongkan
+                                </button>` : 
+                                `<button class="btn btn-sm btn-outline-success py-0" style="font-size: 0.7rem;" onclick="centangSemuaBerkas('${id}')">
+                                    <i class="bi bi-check-all"></i> Semua
+                                </button>`
+                            }
+                        </div>
                     </div>
                     
                     <div class="row g-2">
@@ -732,7 +763,7 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
                         <div class="col-6 col-md-4">${checkbox(id,'skl',berkas.skl,'SKL')}</div>
                         <div class="col-6 col-md-4">${checkbox(id,'ktp_ayah',berkas.ktp_ayah,'KTP Ayah')}</div>
                         <div class="col-6 col-md-4">${checkbox(id,'ktp_ibu',berkas.ktp_ibu,'KTP Ibu')}</div>
-                        <div class="col-6 col-md-4">${checkbox(id,'foto',berkas.foto,'Foto Santri')}</div>
+                        <div class="col-6 col-md-4">${checkbox(id,'foto',berkas.foto,'Foto')}</div>
                     </div>
 
                     ${s.data_lengkap ? 
@@ -753,8 +784,16 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
     });
 
     box.innerHTML = htmlAccumulator || `<div class="text-center p-5 text-muted">Data tidak ditemukan</div>`;
+    
+    // Update pagination status
     updatePaginationControls();
+
+    // --- BAGIAN KRUSIAL ---
+    // Jalankan pembatasan akses setiap kali tabel digambar ulang
+    applyUserRestrictions(); 
 }
+
+
 
 function updatePaginationControls() {
     const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
@@ -793,38 +832,73 @@ function updateStatus(id, jenis, status) {
 }
 
 async function simpanSantri() {
-    const namaInput = document.getElementById("namaSantri").value.trim();
-    const kelasInput = document.getElementById("kelasSantri").value.trim();
-    let wa = document.getElementById("waOrtu").value.trim();
+    // 1. Cek Hak Akses
+    if (sessionStorage.getItem("userRole") !== "admin") {
+        showToast("Akses ditolak! Hanya Admin yang bisa menambah data.", "error");
+        return;
+    }
 
-    if (!namaInput || !kelasInput) return showToast("Nama & Kelas wajib diisi!", "warning");
+    // 2. Ambil elemen input
+    const nama = document.getElementById("namaSantri").value.trim();
+    const kelas = document.getElementById("kelasSantri").value.trim();
+    const wa = document.getElementById("waOrtu").value.trim();
 
-    if (wa && wa.startsWith('0')) wa = '62' + wa.slice(1);
+    // 3. Validasi Input Sederhana
+    if (!nama || !kelas) {
+        showToast("Nama dan Kelas wajib diisi!", "error");
+        return;
+    }
+
+    // Tampilkan Loader (Opsional jika Anda punya elemen loader)
+    const btnSimpan = document.querySelector("#modalTambah .btn-primary");
+    const originalText = btnSimpan.innerHTML;
+    btnSimpan.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+    btnSimpan.disabled = true;
 
     try {
-        const snapshot = await db.collection("santri").where("kelas", "==", kelasInput).get();
-        let isDuplicate = false;
-        snapshot.forEach(doc => {
-            if (doc.data().nama.toLowerCase() === namaInput.toLowerCase()) isDuplicate = true;
-        });
-
-        if (isDuplicate) return showToast("Nama sudah ada di kelas ini!", "error");
-
-        await db.collection("santri").add({
-            nama: namaInput, kelas: kelasInput, wa: wa, data_lengkap: false,
+        // 4. Struktur Data Santri Baru
+        const santriBaru = {
+            nama: nama,
+            kelas: kelas,
+            wa: wa || "0", // Jika WA kosong, set ke "0"
+            data_lengkap: false, // Default awal pasti belum lengkap
+            tanggal_input: firebase.firestore.FieldValue.serverTimestamp(),
             berkas: {
-    kk: false, akta: false, ijazah: false, 
-    skl: false, ktp_ayah: false, ktp_ibu: false, 
-    foto: false}
-        });
+                kk: false,
+                akta: false,
+                ijazah: false,
+                skl: false,
+                ktp_ayah: false,
+                ktp_ibu: false,
+                foto: false
+            }
+        };
 
-        showToast("Data berhasil disimpan!");
-        bootstrap.Modal.getInstance(document.getElementById('modalTambah')).hide();
+        // 5. Simpan ke Firestore
+        await db.collection("santri").add(santriBaru);
+
+        // 6. Respon Sukses
+        showToast(`Berhasil menambah santri: ${nama}`);
+        
+        // Reset Form
         document.getElementById("namaSantri").value = "";
         document.getElementById("kelasSantri").value = "";
         document.getElementById("waOrtu").value = "";
-    } catch (e) { showToast("Sistem Error", "error"); }
+
+        // Tutup Modal
+        const modalTambah = bootstrap.Modal.getInstance(document.getElementById('modalTambah'));
+        modalTambah.hide();
+
+    } catch (error) {
+        console.error("Error saat menyimpan:", error);
+        showToast("Gagal menyimpan data ke cloud!", "error");
+    } finally {
+        // Kembalikan tombol ke keadaan semula
+        btnSimpan.innerHTML = originalText;
+        btnSimpan.disabled = false;
+    }
 }
+
 
 function updateSantri() {
     const id = document.getElementById("editId").value;
@@ -849,8 +923,32 @@ function bukaModalEdit(id, nama, kelas, wa) {
 }
 
 function hapusSantri(id) {
-    if(confirm("Hapus data ini?")) {
-        db.collection("santri").doc(id).delete().then(() => showToast("Data terhapus", "warning"));
+    const role = sessionStorage.getItem("userRole");
+    
+    // 1. Cek Hak Akses
+    if (role !== "admin") {
+        showToast("Akses Ditolak! Hanya Admin yang boleh menghapus data.", "error");
+        return;
+    }
+
+    // 2. Konfirmasi Penghapusan
+    if (confirm("Apakah Anda yakin ingin menghapus data santri ini? Tindakan ini tidak dapat dibatalkan.")) {
+        
+        // 3. Eksekusi ke Firebase Firestore
+        db.collection("santri").doc(id).delete()
+        .then(() => {
+            showToast("Data santri berhasil dihapus", "success");
+            
+            // Opsional: Jika Anda menggunakan cache lokal/array, filter datanya
+            currentData = currentData.filter(item => item.id !== id);
+            
+            // Re-render tampilan
+            filterSantri();
+        })
+        .catch((error) => {
+            console.error("Error menghapus dokumen: ", error);
+            showToast("Gagal menghapus data dari server", "error");
+        });
     }
 }
 
@@ -1366,6 +1464,28 @@ function updateRowsPerPage() {
     
     // Opsional: scroll ke atas
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
+
+function terapkanHakAkses() {
+    const role = sessionStorage.getItem("userRole");
+    
+    if (role === "user") {
+        // Sembunyikan tombol Import, Hapus, Tambah, dan Naik Kelas
+        const elemenAdmin = [
+            ".btn-success", // Tombol Import
+            ".btn-danger",  // Tombol Hapus Semua
+            ".btn-warning", // Tombol Naik Kelas
+            ".fab",         // Tombol Tambah (Floating Action Button)
+            ".bi-trash",    // Icon Hapus di setiap card
+            ".bi-pencil-square" // Icon Edit di setiap card
+        ];
+
+        elemenAdmin.forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => el.style.setProperty("display", "none", "important"));
+        });
+    }
 }
 </script>
 
