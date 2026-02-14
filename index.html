@@ -315,7 +315,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">Nama Lengkap</label>
+                    <label class="form-label small fw-bold">Nama Santri</label>
                     <input id="namaSantri" class="form-control bg-light border-0">
                 </div>
                 <div class="mb-3">
@@ -323,7 +323,7 @@
                     <input id="kelasSantri" class="form-control bg-light border-0">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">WhatsApp Orang Tua</label>
+                    <label class="form-label small fw-bold">WhatsApp</label>
                     <input id="waOrtu" type="number" class="form-control bg-light border-0" placeholder="62xxx">
                 </div>
             </div>
@@ -344,7 +344,7 @@
             <div class="modal-body">
                 <input type="hidden" id="editId">
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">Nama Lengkap</label>
+                    <label class="form-label small fw-bold">Nama Santri</label>
                     <input id="editNama" class="form-control bg-light border-0">
                 </div>
                 <div class="mb-3">
@@ -352,7 +352,7 @@
                     <input id="editKelas" class="form-control bg-light border-0">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">WhatsApp Orang Tua</label>
+                    <label class="form-label small fw-bold">WhatsApp</label>
                     <input id="editWa" type="number" class="form-control bg-light border-0">
                 </div>
             </div>
@@ -1111,7 +1111,7 @@ async function eksekusiImport(sheetName) {
         // --- TAHAP 1: VALIDASI KELAS ---
         for (let i = 0; i < json.length; i++) {
             const row = json[i];
-            const nama = row['Nama Lengkap'] ? row['Nama Lengkap'].toString().trim() : null;
+            const nama = row['Nama Santri'] ? row['Nama Santri'].toString().trim() : null;
             const kelas = row['Kelas'] ? row['Kelas'].toString().trim() : "";
             
             // Jika ada Nama tapi Kelas Kosong, catat barisnya
@@ -1127,9 +1127,9 @@ async function eksekusiImport(sheetName) {
 
         // --- TAHAP 2: PROSES DATA ---
         for (const row of json) {
-            const namaBaru = row['Nama Lengkap'] ? row['Nama Lengkap'].toString().trim() : null;
+            const namaBaru = row['Nama Santri'] ? row['Nama Santri'].toString().trim() : null;
             const kelasBaru = row['Kelas'] ? row['Kelas'].toString().trim() : "";
-            let waBaru = row['WhatsApp Orang Tua'] ? row['WhatsApp Orang Tua'].toString().trim() : "";
+            let waBaru = row['WhatsApp'] ? row['WhatsApp'].toString().trim() : "";
             
             if (waBaru.startsWith('0')) waBaru = '62' + waBaru.slice(1);
 
@@ -1142,13 +1142,13 @@ async function eksekusiImport(sheetName) {
 
                 if (!isDuplicate) {
                     const berkas = {
-                        kk: cekStatus(row['KK']),
-                        akta: cekStatus(row['Akta']),
-                        ijazah: cekStatus(row['Ijazah']),
+                        kk: cekStatus(row['Fc. KK']),
+                        akta: cekStatus(row['Fc. Akta']),
+                        ijazah: cekStatus(row['Fc. Ijazah Terakhir']),
                         skl: cekStatus(row['SKL']),
-                        ktp_ayah: cekStatus(row['KTP Ayah']),
-                        ktp_ibu: cekStatus(row['KTP Ibu']),
-                        foto: cekStatus(row['Foto Santri'])
+                        ktp_ayah: cekStatus(row['Fc. KTP Ayah']),
+                        ktp_ibu: cekStatus(row['Fc. KTP Ibu']),
+                        foto: cekStatus(row['Pas Foto'])
                     };
 
                     // Hitung otomatis jika semua berkas true
