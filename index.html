@@ -64,14 +64,31 @@
             margin-bottom: 15px;
             transition: 0.2s;
         }
-        /* Style untuk santri tanpa WA */
+        .card-santri:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
         .card-no-wa {
             border-left: 5px solid #dc3545 !important;
+        }
+        .card-lulus {
+            border-left: 5px solid #ffc107 !important;
+            background: linear-gradient(135deg, #fff8e1, #fff3cd) !important;
         }
         .badge-kelas {
             background-color: #e7f1ff;
             color: #0d6efd;
             font-weight: 600;
+        }
+        .badge-lulus {
+            background-color: #ffc107;
+            color: #000;
+            font-weight: 700;
+        }
+        .badge-akhir {
+            background-color: #dc3545;
+            color: #fff;
+            font-weight: 700;
         }
         .fab {
             position: fixed;
@@ -87,10 +104,16 @@
             z-index: 999;
         }
         .wa-btn {
-            background-color: #25D366;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            border: none;
             color: white;
             border-radius: 10px;
             font-weight: 600;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+        }
+        .wa-btn:hover {
+            background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
+            color: white;
         }
         .btn-excel {
             border-radius: 10px;
@@ -105,74 +128,337 @@
             border-radius: 8px;
             margin-bottom: 5px;
         }
-.card-santri {
-    transition: all 0.3s ease;
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-.card-santri:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-}
-
-/* Membuat tampilan progress bar lebih halus */
-.progress {
-    background-color: #f0f0f0;
-    overflow: hidden;
-}
-
-.progress-bar {
-    border-radius: 10px;
-    transition: width 1s ease-in-out;
-}
-.wa-btn {
-    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-    border: none;
-    color: white;
-    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
-}
-
-.wa-btn:hover {
-    background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
-    color: white;
-}
-.item-santri {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-#focusMode:checked + .form-check-label {
-    color: #dc3545 !important; /* Berubah jadi merah saat aktif agar waspada */
-}
-
-.form-switch .form-check-input {
-    width: 2.5em;
-    cursor: pointer;
-}
-#rowsPerPage {
-    padding-right: 25px; /* Memberi ruang untuk icon panah select */
-    min-width: 70px;
-    text-align: center;
-}
-
-.pagination-container {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(5px);
-    border-top: 1px solid #eee;
-    padding: 15px 0;
-}
-.btn-logout {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 10px;
-    transition: 0.3s;
-}
-
-.btn-logout:hover {
-    background: #dc3545;
-    color: white;
-}
+        .progress {
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+        .item-santri {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #focusMode:checked + .form-check-label {
+            color: #dc3545 !important;
+        }
+        .form-switch .form-check-input {
+            width: 2.5em;
+            cursor: pointer;
+        }
+        #rowsPerPage {
+            padding-right: 25px;
+            min-width: 70px;
+            text-align: center;
+        }
+        .pagination-container {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            border-top: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .btn-logout:hover {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-admin-only {
+            display: inline-block !important;
+        }
+        .btn-admin-only.hidden {
+            display: none !important;
+        }
+        .modal-content {
+            border-radius: 20px !important;
+        }
+        .filter-kelulusan-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn-kelas-akhir {
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .btn-kelas-akhir:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .btn-kelas-9 {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border-color: #0d47a1;
+        }
+        .btn-kelas-9:hover, .btn-kelas-9.active {
+            background: #0d47a1;
+            color: white;
+        }
+        .btn-kelas-12 {
+            background: #fce4ec;
+            color: #880e4f;
+            border-color: #880e4f;
+        }
+        .btn-kelas-12:hover, .btn-kelas-12.active {
+            background: #880e4f;
+            color: white;
+        }
+        .btn-semua-kelas {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border-color: #1b5e20;
+        }
+        .btn-semua-kelas:hover, .btn-semua-kelas.active {
+            background: #1b5e20;
+            color: white;
+        }
+        .btn-pilih-semua {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .btn-pilih-semua:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-pilih-semua.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .jumlah-santri-badge {
+            background: #f8f9fa;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .list-santri-item {
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        .list-santri-item:hover {
+            background: #f8f9fa !important;
+        }
+        .list-santri-item .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        /* Tab Style */
+        .nav-tabs .nav-link {
+            border-radius: 10px 10px 0 0;
+            font-weight: 600;
+            color: #6c757d;
+            border: none;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+        .nav-tabs .nav-link:hover {
+            background: #f8f9fa;
+            color: #0d6efd;
+        }
+        .nav-tabs .nav-link.active {
+            background: white;
+            color: #0d6efd;
+            border-bottom: 3px solid #0d6efd;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-tabs .nav-link i {
+            margin-right: 8px;
+        }
+        .tab-content {
+            background: white;
+            border-radius: 0 0 16px 16px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .btn-hapus-massal {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-hapus-massal:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+        .btn-hapus-massal:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-hapus-massal .badge-count {
+            background: rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 1px 10px;
+            margin-left: 8px;
+            font-size: 0.75rem;
+        }
+        .btn-hapus-massal .dropdown-icon {
+            margin-left: 8px;
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+        .btn-hapus-massal .dropdown-icon.open {
+            transform: rotate(180deg);
+        }
+        .btn-hapus-massal .tooltip-text {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            display: block;
+            font-weight: 400;
+        }
+        .dropdown-hapus-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            min-width: 220px;
+            padding: 8px;
+            margin-top: 8px;
+            z-index: 1000;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        .dropdown-hapus-menu.show {
+            display: block;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .dropdown-hapus-menu .menu-item {
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            background: none;
+            width: 100%;
+            font-weight: 500;
+        }
+        .dropdown-hapus-menu .menu-item:hover {
+            background: #f8f9fa;
+        }
+        .dropdown-hapus-menu .menu-item.danger {
+            color: #dc3545;
+        }
+        .dropdown-hapus-menu .menu-item.danger:hover {
+            background: #fce4ec;
+        }
+        .dropdown-hapus-menu .menu-item .icon {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+        .dropdown-hapus-menu .menu-item .desc {
+            font-size: 0.75rem;
+            color: #6c757d;
+            font-weight: 400;
+        }
+        .dropdown-hapus-menu .divider {
+            height: 1px;
+            background: #e9ecef;
+            margin: 6px 10px;
+        }
+        .btn-hapus-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .card-lulus .badge-kelas {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .checkbox-hapus-massal {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #dc3545;
+        }
+        .checkbox-hapus-massal:checked {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .toolbar-lulus {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        .toolbar-lulus .left-section {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .toolbar-lulus .right-section {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .badge-jumlah-lulus {
+            background: #ffc107;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .btn-hapus-massal.mode-semua {
+            background: linear-gradient(135deg, #dc3545, #a71d2a);
+            animation: pulse-danger 2s infinite;
+        }
+        @keyframes pulse-danger {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        .btn-hapus-massal .menu-badge {
+            background: #ffc107;
+            color: #000;
+            border-radius: 10px;
+            padding: 0 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -180,11 +466,9 @@
 <nav class="navbar navbar-dark shadow-sm" style="background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%) !important;">
     <div class="container d-flex justify-content-between align-items-center">
         <div style="width: 40px;"></div> 
-
         <span class="navbar-brand fw-bold">
             <i class="bi bi-mortarboard-fill me-2"></i>SISTEM BERKAS SANTRI
         </span>
-
         <button class="btn btn-sm btn-light text-danger fw-bold" onclick="logout()" style="border-radius: 8px;">
             <i class="bi bi-box-arrow-right"></i>
         </button>
@@ -193,22 +477,28 @@
 
 <div class="container mt-3">
 <div class="row g-2 mb-4">
-    <div class="col-4">
+    <div class="col-3">
         <div class="stats-card border-start border-primary border-4 shadow-sm text-center">
             <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.6rem;">Total</div>
             <div class="fw-bold h5 mb-0" id="statTotal">0</div>
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-3">
         <div class="stats-card border-start border-success border-4 shadow-sm text-center">
             <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.6rem;">Lengkap</div>
             <div class="fw-bold h5 mb-0 text-success" id="statLengkap">0</div>
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-3">
         <div class="stats-card border-start border-danger border-4 shadow-sm text-center">
             <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.6rem;">Belum</div>
             <div class="fw-bold h5 mb-0 text-danger" id="statBelum">0</div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="stats-card border-start border-warning border-4 shadow-sm text-center">
+            <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.6rem;">Lulus</div>
+            <div class="fw-bold h5 mb-0 text-warning" id="statLulus">0</div>
         </div>
     </div>
 </div>
@@ -220,8 +510,8 @@
     </div>
 </div>
  
-    <div class="d-flex gap-2 mb-3">
-        <button class="btn btn-success btn-excel flex-fill" onclick="document.getElementById('fileImport').click()">
+    <div class="d-flex gap-2 mb-3 flex-wrap">
+        <button class="btn btn-success btn-excel flex-fill btn-admin-only" onclick="document.getElementById('fileImport').click()">
             <i class="bi bi-file-earmark-excel me-1"></i> Import
         </button>
         <button class="btn btn-outline-primary btn-excel flex-fill" onclick="exportExcel()">
@@ -230,85 +520,189 @@
         <button class="btn wa-btn flex-fill" onclick="kirimRekapGrup()">
             <i class="bi bi-whatsapp me-1"></i> Rekap WA
         </button>
-        <button class="btn btn-danger btn-excel px-3" onclick="hapusSemuaSantri()" title="Hapus Semua Data">
+        <button class="btn btn-danger btn-excel px-3 btn-admin-only" onclick="hapusSemuaSantri()" title="Hapus Semua Data">
             <i class="bi bi-trash3-fill"></i>
         </button>
-        <button class="btn btn-warning btn-excel flex-fill" data-bs-toggle="modal" data-bs-target="#modalNaikKelas" onclick="inisialisasiMapping()">
+        <button class="btn btn-warning btn-excel flex-fill btn-admin-only" data-bs-toggle="modal" data-bs-target="#modalNaikKelas" onclick="inisialisasiMapping()">
             <i class="bi bi-arrow-up-square-fill me-1"></i> Naik Kelas
+        </button>
+        <button class="btn btn-info btn-excel flex-fill btn-admin-only" data-bs-toggle="modal" data-bs-target="#modalKelulusan" onclick="inisialisasiKelulusan()">
+            <i class="bi bi-award-fill me-1"></i> Kelulusan
         </button>
         <input type="file" id="fileImport" hidden accept=".xlsx, .xls" onchange="importExcel(event)">
     </div>
 
-    <div class="bg-white p-3 rounded-4 shadow-sm mb-4">
-        <div class="position-relative mb-3">
-            <i class="bi bi-search search-icon"></i>
-            <input type="text" id="searchInput" class="form-control form-control-lg search-box" placeholder="Cari nama santri..." onkeyup="filterSantri()">
-        </div>
-        <div class="row g-2">
-            <div class="col-6">
-                <select id="filterKelas" class="form-select filter-select" onchange="filterSantri()">
-                    <option value="">Semua Kelas</option>
-                </select>
-            </div>
-            <div class="col-6">
-                <select id="filterStatus" class="form-select filter-select" onchange="filterSantri()">
-                    <option value="all">Semua Status</option>
-                    <option value="lengkap">Lengkap</option>
-                    <option value="belum">Belum Lengkap</option>
-                    <option value="no_wa">WhatsApp Kosong</option>
-                </select>
-            </div>
-        </div>
-            <div class="d-flex justify-content-between align-items-center mt-3 px-1">
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="focusMode" onchange="filterSantri()">
-            <label class="form-check-label small fw-bold text-primary" for="focusMode">
-                <i class="bi bi-eye-slash-fill me-1"></i> Sembunyikan Yang Lengkap
-            </label>
-        </div>
-        <div id="countFilter" class="small text-muted fw-bold" style="font-size: 0.7rem;"></div>
-    </div>
-    </div>
-
-    <div id="loader" class="text-center py-4">
-        <div class="spinner-border text-primary spinner-border-sm"></div>
-        <p class="small text-muted mt-2">Sinkronisasi Cloud...</p>
-    </div>
-
-    <div class="row" id="daftarSantri"></div>
-</div>
-<div class="container mt-4 mb-5">
-    <div class="d-flex flex-column align-items-center justify-content-center">
-        <div class="d-flex align-items-center gap-2 mb-2">
-            <button class="btn btn-outline-primary btn-sm px-3 shadow-sm" id="btnPrev" onclick="changePage(-1)" style="border-radius: 10px; height: 38px;">
-                <i class="bi bi-chevron-left"></i> Prev
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="santriTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-aktif" data-bs-toggle="tab" data-bs-target="#aktif" type="button" role="tab">
+                <i class="bi bi-person-check-fill"></i> Santri Aktif
             </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-lulus" data-bs-toggle="tab" data-bs-target="#lulus" type="button" role="tab">
+                <i class="bi bi-award-fill text-warning"></i> Santri Lulus
+                <span class="badge bg-warning text-dark ms-1" id="badgeJumlahLulus">0</span>
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="santriTabContent">
+        <!-- Tab Santri Aktif -->
+        <div class="tab-pane fade show active" id="aktif" role="tabpanel">
+            <div class="bg-white p-3 rounded-4 shadow-sm mb-4">
+                <div class="position-relative mb-3">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" id="searchInput" class="form-control form-control-lg search-box" placeholder="Cari nama santri..." onkeyup="filterSantri()">
+                </div>
+                <div class="row g-2">
+                    <div class="col-4">
+                        <select id="filterKelas" class="form-select filter-select" onchange="filterSantri()">
+                            <option value="">Semua Kelas</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <select id="filterStatus" class="form-select filter-select" onchange="filterSantri()">
+                            <option value="all">Semua Status</option>
+                            <option value="lengkap">Lengkap</option>
+                            <option value="belum">Belum Lengkap</option>
+                            <option value="no_wa">WhatsApp Kosong</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <select id="filterLulus" class="form-select filter-select" onchange="filterSantri()">
+                            <option value="all">Semua</option>
+                            <option value="aktif">Aktif</option>
+                            <option value="lulus">Lulus</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3 px-1">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="focusMode" onchange="filterSantri()">
+                        <label class="form-check-label small fw-bold text-primary" for="focusMode">
+                            <i class="bi bi-eye-slash-fill me-1"></i> Sembunyikan Yang Lengkap
+                        </label>
+                    </div>
+                    <div id="countFilter" class="small text-muted fw-bold" style="font-size: 0.7rem;"></div>
+                </div>
+            </div>
+
+            <div id="loader" class="text-center py-4">
+                <div class="spinner-border text-primary spinner-border-sm"></div>
+                <p class="small text-muted mt-2">Sinkronisasi Cloud...</p>
+            </div>
+
+            <div class="row" id="daftarSantri"></div>
             
-            <select id="rowsPerPage" class="form-select form-select-sm shadow-sm" style="width: auto; border-radius: 8px; height: 38px;" onchange="updateRowsPerPage()">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
+            <div class="d-flex flex-column align-items-center justify-content-center mt-4">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <button class="btn btn-outline-primary btn-sm px-3 shadow-sm" id="btnPrev" onclick="changePage(-1)" style="border-radius: 10px; height: 38px;">
+                        <i class="bi bi-chevron-left"></i> Prev
+                    </button>
+                    
+                    <select id="rowsPerPage" class="form-select form-select-sm shadow-sm" style="width: auto; border-radius: 8px; height: 38px;" onchange="updateRowsPerPage()">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
 
-            <button class="btn btn-outline-primary btn-sm px-3 shadow-sm" id="btnNext" onclick="changePage(1)" style="border-radius: 10px; height: 38px;">
-                Next <i class="bi bi-chevron-right"></i>
-            </button>
+                    <button class="btn btn-outline-primary btn-sm px-3 shadow-sm" id="btnNext" onclick="changePage(1)" style="border-radius: 10px; height: 38px;">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="fw-bold text-muted small" id="pageIndicator" style="font-size: 0.7rem;">
+                    Halaman 1 dari 1
+                </div>
+            </div>
         </div>
-        
-        <div class="fw-bold text-muted small" id="pageIndicator" style="font-size: 0.7rem;">
-            Halaman 1 dari 1
+
+        <!-- Tab Santri Lulus -->
+        <div class="tab-pane fade" id="lulus" role="tabpanel">
+            <div class="toolbar-lulus">
+                <div class="left-section">
+                    <input type="text" id="searchLulus" class="form-control form-control-sm" placeholder="Cari santri lulus..." style="width: 200px;" onkeyup="renderSantriLulus()">
+                    <select id="filterKelasLulus" class="form-select form-select-sm" style="width: 150px;" onchange="renderSantriLulus()">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                    <span class="badge-jumlah-lulus" id="totalLulusDisplay">
+                        <i class="bi bi-people-fill me-1"></i> <span id="totalLulusCount">0</span> Santri
+                    </span>
+                </div>
+                <div class="right-section">
+                    <div class="btn-hapus-wrapper">
+                        <button class="btn btn-hapus-massal btn-admin-only" id="btnHapusUtama" onclick="toggleHapusDropdown()" disabled>
+                            <i class="bi bi-trash3-fill me-1"></i> 
+                            <span id="hapusBtnText">Hapus</span>
+                            <span class="badge-count" id="hapusBadgeCount">0</span>
+                            <i class="bi bi-chevron-down dropdown-icon" id="dropdownIcon"></i>
+                            <small class="tooltip-text" id="hapusTooltip">Pilih metode hapus</small>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div class="dropdown-hapus-menu" id="hapusDropdown">
+                            <button class="menu-item danger" onclick="eksekusiHapus('terpilih')">
+                                <span class="icon"><i class="bi bi-check-square-fill"></i></span>
+                                <div>
+                                    <div>Hapus Terpilih</div>
+                                    <div class="desc">Hanya yang dicentang</div>
+                                </div>
+                            </button>
+                            <div class="divider"></div>
+                            <button class="menu-item danger" onclick="eksekusiHapus('semua')">
+                                <span class="icon"><i class="bi bi-trash3-fill"></i></span>
+                                <div>
+                                    <div>Hapus Semua <span class="menu-badge" id="menuBadgeSemua">0</span></div>
+                                    <div class="desc">Semua yang tampil dengan filter</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="loaderLulus" class="text-center py-4" style="display: none;">
+                <div class="spinner-border text-primary spinner-border-sm"></div>
+                <p class="small text-muted mt-2">Memuat data...</p>
+            </div>
+
+            <div class="row" id="daftarSantriLulus"></div>
+            
+            <div class="d-flex flex-column align-items-center justify-content-center mt-4">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <button class="btn btn-outline-primary btn-sm px-3 shadow-sm" id="btnPrevLulus" onclick="changePageLulus(-1)" style="border-radius: 10px; height: 38px;">
+                        <i class="bi bi-chevron-left"></i> Prev
+                    </button>
+                    
+                    <select id="rowsPerPageLulus" class="form-select form-select-sm shadow-sm" style="width: auto; border-radius: 8px; height: 38px;" onchange="updateRowsPerPageLulus()">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+
+                    <button class="btn btn-outline-primary btn-sm px-3 shadow-sm" id="btnNextLulus" onclick="changePageLulus(1)" style="border-radius: 10px; height: 38px;">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="fw-bold text-muted small" id="pageIndicatorLulus" style="font-size: 0.7rem;">
+                    Halaman 1 dari 1
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<button class="btn btn-primary fab" data-bs-toggle="modal" data-bs-target="#modalTambah">
+<button class="btn btn-primary fab btn-admin-only" data-bs-toggle="modal" data-bs-target="#modalTambah">
     <i class="bi bi-plus-lg fs-3"></i>
 </button>
 
+<!-- Modal Tambah Santri -->
 <div class="modal fade" id="modalTambah" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered shadow">
-        <div class="modal-content border-0" style="border-radius: 20px;">
+        <div class="modal-content border-0">
             <div class="modal-header border-0">
                 <h5 class="modal-title fw-bold">Input Data Santri</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -334,9 +728,10 @@
     </div>
 </div>
 
+<!-- Modal Edit Santri -->
 <div class="modal fade" id="modalEdit" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered shadow">
-        <div class="modal-content border-0" style="border-radius: 20px;">
+        <div class="modal-content border-0">
             <div class="modal-header border-0">
                 <h5 class="modal-title fw-bold">Edit Data Santri</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -363,9 +758,10 @@
     </div>
 </div>
 
+<!-- Modal Naik Kelas -->
 <div class="modal fade" id="modalNaikKelas" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0" style="border-radius: 20px;">
+        <div class="modal-content border-0">
             <div class="modal-header border-0">
                 <h5 class="modal-title fw-bold"><i class="bi bi-arrow-up-circle-fill me-2 text-primary"></i>Kenaikan Kelas Massal</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -374,8 +770,7 @@
                 <div class="alert alert-info small">
                     Pilih kelas asal dan tentukan kelas tujuannya. Data akan diperbarui secara massal.
                 </div>
-                <div id="mappingContainer">
-                    </div>
+                <div id="mappingContainer"></div>
                 <button class="btn btn-outline-primary btn-sm w-100 mt-2" onclick="tambahBarisMapping()">
                     <i class="bi bi-plus"></i> Tambah Pemetaan Kelas
                 </button>
@@ -387,9 +782,70 @@
     </div>
 </div>
 
+<!-- Modal Kelulusan -->
+<div class="modal fade" id="modalKelulusan" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold"><i class="bi bi-award-fill me-2 text-warning"></i>Proses Kelulusan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning small">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Hanya santri <strong>Kelas 9</strong> dan <strong>Kelas 12</strong> yang dapat diluluskan. 
+                    Pilih santri yang akan dinyatakan lulus.
+                </div>
+                
+                <div class="filter-kelulusan-group mb-3">
+                    <button class="btn btn-kelas-akhir btn-kelas-9 active" onclick="filterKelulusan('kelas9', this)">
+                        <i class="bi bi-9-circle"></i> Kelas 9
+                        <span class="badge bg-light text-dark ms-1" id="countKelas9">0</span>
+                    </button>
+                    <button class="btn btn-kelas-akhir btn-kelas-12" onclick="filterKelulusan('kelas12', this)">
+                        <i class="bi bi-1-circle"></i> Kelas 12
+                        <span class="badge bg-light text-dark ms-1" id="countKelas12">0</span>
+                    </button>
+                    <button class="btn btn-kelas-akhir btn-semua-kelas" onclick="filterKelulusan('semua', this)">
+                        <i class="bi bi-list-ul"></i> Semua
+                        <span class="badge bg-light text-dark ms-1" id="countSemua">0</span>
+                    </button>
+                    
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                        <button class="btn btn-pilih-semua" onclick="pilihSemuaSantriLulus()">
+                            <i class="bi bi-check-all me-1"></i> Pilih Semua
+                        </button>
+                        <span class="jumlah-santri-badge" id="jumlahSantriLulus">
+                            <i class="bi bi-people-fill me-1"></i> 0 santri
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label fw-bold small">Daftar Santri Kelas Akhir</label>
+                    </div>
+                    <div id="listSantriLulus" style="max-height: 350px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 10px; padding: 10px; background: #fafafa;"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Keterangan Kelulusan (Opsional)</label>
+                    <input type="text" id="keteranganLulus" class="form-control bg-light border-0" placeholder="Contoh: Lulus Ujian Akhir">
+                </div>
+            </div>
+            <div class="p-3 pt-0">
+                <button class="btn btn-warning w-100 py-3 fw-bold" onclick="prosesKelulusan()" style="border-radius: 12px;">
+                    <i class="bi bi-award-fill me-2"></i>Luluskan Santri Terpilih
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pilih Sheet Import -->
 <div class="modal fade" id="modalPilihSheet" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0" style="border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
+        <div class="modal-content border-0">
             <div class="modal-header border-0 pt-4 px-4">
                 <div class="d-flex align-items-center">
                     <div class="bg-success-subtle p-3 rounded-4 me-3">
@@ -405,8 +861,7 @@
             <div class="modal-body p-4">
                 <div class="mb-3">
                     <label class="form-label small fw-bold text-uppercase text-muted">Daftar Sheet Tersedia</label>
-                    <select id="selectSheet" class="form-select form-select-lg border-0 bg-light py-3" style="border-radius: 15px; cursor: pointer;">
-                        </select>
+                    <select id="selectSheet" class="form-select form-select-lg border-0 bg-light py-3" style="border-radius: 15px; cursor: pointer;"></select>
                 </div>
                 <div id="infoSheet" class="p-3 rounded-4 bg-primary-subtle border border-primary-subtle" style="display: none;">
                     <div class="d-flex align-items-center text-primary">
@@ -424,9 +879,10 @@
     </div>
 </div>
 
+<!-- Modal PIN -->
 <div class="modal fade" id="modalPIN" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0" style="border-radius: 20px;">
+        <div class="modal-content border-0">
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title fw-bold mx-auto"><i class="bi bi-shield-lock-fill text-danger me-2"></i>Verifikasi PIN</h5>
             </div>
@@ -459,57 +915,52 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// 1. Fungsi untuk membatasi akses (Taruh di atas checkAccess)
+// ===== FUNGSI AKSES =====
 function applyUserRestrictions() {
     const userRole = sessionStorage.getItem("userRole");
     
-    // Jika login sebagai user (PIN 123), sembunyikan fitur modifikasi
     if (userRole === "user") {
-        // Daftar selector tombol yang hanya boleh dilihat Admin
         const adminElements = [
-            '.btn-danger',          // Tombol Hapus Semua
-            '.btn-success',         // Tombol Import
-            '.btn-warning',         // Tombol Naik Kelas
-            '.fab',                 // Tombol Tambah Floating
-            '.bi-pencil-square',    // Icon Edit di baris santri
-            '.bi-trash'             // Icon Hapus di baris santri
+            '.btn-danger', '.btn-success', '.btn-warning', '.btn-info',
+            '.fab', '.bi-pencil-square', '.bi-trash', '.btn-hapus-massal'
         ];
 
         adminElements.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
+            document.querySelectorAll(selector).forEach(el => {
                 el.style.setProperty('display', 'none', 'important');
             });
+        });
+        
+        document.querySelectorAll('.form-check').forEach(el => {
+            if (el.getAttribute('onclick') && el.getAttribute('onclick').includes('updateStatus')) {
+                el.style.setProperty('display', 'none', 'important');
+            }
         });
         
         console.log("Akses dibatasi: Mode Viewer Aktif");
     }
 }
 
-// 2. Fungsi Pengecekan Akses Utama
 function checkAccess() {
     const sessionAkses = sessionStorage.getItem("isLoggedIn");
     const userRole = sessionStorage.getItem("userRole");
 
-    // Jika sudah ada session login
     if (sessionAkses === "true") {
-        // Gunakan setTimeout agar DOM selesai loading sebelum menyembunyikan elemen
         setTimeout(applyUserRestrictions, 100);
         return true;
     }
 
-    // Jika belum login, minta PIN
     const aksesPin = prompt("Masukkan PIN Akses:");
     
-    if (aksesPin === "456") { // PIN Admin
+    if (aksesPin === "456") {
         sessionStorage.setItem("isLoggedIn", "true");
         sessionStorage.setItem("userRole", "admin");
-        location.reload(); // Refresh untuk menerapkan role
+        location.reload();
         return true;
-    } else if (aksesPin === "123") { // PIN User Biasa
+    } else if (aksesPin === "123") {
         sessionStorage.setItem("isLoggedIn", "true");
         sessionStorage.setItem("userRole", "user");
-        applyUserRestrictions(); // Langsung terapkan pembatasan
+        applyUserRestrictions();
         return true;
     } else {
         alert("PIN Salah!");
@@ -523,27 +974,34 @@ function checkAccess() {
     }
 }
 
-// Jalankan pengecekan
 checkAccess();
 
-
-
-// Fungsi Log Out
 function logout() {
     if (confirm("Apakah Anda yakin ingin keluar?")) {
-        sessionStorage.removeItem("isLoggedIn"); // Hapus status login
-        location.reload(); // Refresh halaman untuk meminta PIN lagi
+        sessionStorage.removeItem("isLoggedIn");
+        location.reload();
     }
 }
 
-
+// ===== VARIABEL GLOBAL =====
 let currentData = [];
 let statusChart = null;
-
-
 let fungsiSetelahPinBenar = null;
-const PIN_ADMIN = "456"; 
+const PIN_ADMIN = "456";
+let daftarKelasUnik = [];
+let filterKelulusanSaatIni = 'kelas9';
 
+// Pagination untuk Santri Aktif
+let currentPage = 1;
+let rowsPerPage = 10;
+let filteredData = [];
+
+// Pagination untuk Santri Lulus
+let currentPageLulus = 1;
+let rowsPerPageLulus = 10;
+let filteredDataLulus = [];
+
+// ===== FUNGSI TOAST & PIN =====
 function mintaPin(aksi) {
     fungsiSetelahPinBenar = aksi;
     document.getElementById("inputPinKeamanan").value = "";
@@ -567,7 +1025,6 @@ document.getElementById("btnKonfirmasiPin").addEventListener("click", function()
     }
 });
 
-
 function showToast(pesan, tipe = "success") {
     let bgColor = "linear-gradient(to right, #00b09b, #96c93d)";
     if (tipe === "error") bgColor = "linear-gradient(to right, #ff5f6d, #ffc371)";
@@ -576,59 +1033,57 @@ function showToast(pesan, tipe = "success") {
     Toastify({
         text: pesan,
         duration: 3000,
-        gravity: "top", 
-        position: "right", 
+        gravity: "top",
+        position: "right",
         style: { background: bgColor, borderRadius: "12px", fontWeight: "600" }
     }).showToast();
 }
 
-/* KONFIGURASI PAGINASI */
-let currentPage = 1;
-let rowsPerPage = 10; // Ubah dari const menjadi let
-let filteredData = [];
-
-/* DATA HANDLER */
+// ===== DATA HANDLER =====
 db.collection("santri").orderBy("nama", "asc").onSnapshot(snapshot => {
     document.getElementById("loader").style.display = "none";
     currentData = [];
     let setKelas = new Set();
     let lengkapCount = 0;
+    let lulusCount = 0;
 
     snapshot.forEach(doc => {
         const s = doc.data();
         currentData.push({ id: doc.id, ...s });
         if(s.data_lengkap) lengkapCount++;
+        if(s.status_lulus) lulusCount++;
         if(s.kelas) setKelas.add(s.kelas);
     });
 
     const total = currentData.length;
-    const belumLengkap = total - lengkapCount;
+    const belumLengkap = total - lengkapCount - lulusCount;
 
-    // Update Angka Statistik
     document.getElementById("statTotal").innerText = total;
     document.getElementById("statLengkap").innerText = lengkapCount;
     document.getElementById("statBelum").innerText = belumLengkap;
+    document.getElementById("statLulus").innerText = lulusCount;
 
     updateFilterKelas(setKelas);
-    updateChart(lengkapCount, belumLengkap); // Panggil fungsi chart
-    filterSantri(); 
+    updateFilterKelasLulus(setKelas);
+    updateChart(lengkapCount, belumLengkap, lulusCount);
+    filterSantri();
+    renderSantriLulus();
 });
 
-// Fungsi untuk membuat/update Chart
-function updateChart(lengkap, belum) {
+function updateChart(lengkap, belum, lulus) {
     const ctx = document.getElementById('statusChart').getContext('2d');
     
     if (statusChart) {
-        statusChart.destroy(); // Hapus chart lama sebelum membuat yang baru
+        statusChart.destroy();
     }
 
     statusChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Lengkap', 'Belum Lengkap'],
+            labels: ['Lengkap', 'Belum Lengkap', 'Lulus'],
             datasets: [{
-                data: [lengkap, belum],
-                backgroundColor: ['#198754', '#dc3545'],
+                data: [lengkap, belum, lulus],
+                backgroundColor: ['#198754', '#dc3545', '#ffc107'],
                 borderWidth: 0,
                 hoverOffset: 4
             }]
@@ -646,35 +1101,39 @@ function updateChart(lengkap, belum) {
                     }
                 }
             },
-            cutout: '70%' // Membuat doughnut lebih tipis dan modern
+            cutout: '70%'
         }
     });
 }
 
-
+// ===== TAB SANTRI AKTIF =====
 function filterSantri() {
     const searchVal = document.getElementById("searchInput").value.toLowerCase();
     const kelasVal = document.getElementById("filterKelas").value;
     const statusVal = document.getElementById("filterStatus").value;
+    const lulusVal = document.getElementById("filterLulus").value;
     const isFocusMode = document.getElementById("focusMode").checked;
 
-    // Proses Filtering
     filteredData = currentData.filter(s => {
         const isWaKosong = !s.wa || s.wa.toString().trim() === "" || s.wa.toString() === "0";
         const matchSearch = s.nama.toLowerCase().includes(searchVal);
         const matchKelas = kelasVal === "" || s.kelas === kelasVal;
         
         let matchStatus = true;
-        if (statusVal === "lengkap") matchStatus = s.data_lengkap;
-        if (statusVal === "belum") matchStatus = !s.data_lengkap;
-        if (statusVal === "no_wa") matchStatus = isWaKosong;
+        if (statusVal === "lengkap") matchStatus = s.data_lengkap && !s.status_lulus;
+        if (statusVal === "belum") matchStatus = !s.data_lengkap && !s.status_lulus;
+        if (statusVal === "no_wa") matchStatus = isWaKosong && !s.status_lulus;
 
-        const focusFilter = isFocusMode ? !s.data_lengkap : true;
+        let matchLulus = true;
+        if (lulusVal === "aktif") matchLulus = !s.status_lulus;
+        if (lulusVal === "lulus") matchLulus = s.status_lulus === true;
 
-        return matchSearch && matchKelas && matchStatus && focusFilter;
+        const focusFilter = isFocusMode ? (!s.data_lengkap && !s.status_lulus) : true;
+
+        return matchSearch && matchKelas && matchStatus && matchLulus && focusFilter && !s.status_lulus;
     });
 
-    currentPage = 1; // Reset ke halaman 1 setiap kali filter berubah
+    currentPage = 1;
     renderTable();
 }
 
@@ -700,6 +1159,7 @@ function renderTable() {
         const id = s.id;
         const isWaKosong = !s.wa || s.wa.toString().trim() === "" || s.wa.toString() === "0";
         const berkas = s.berkas || {}; 
+        const isKelasAkhir = s.kelas === "9" || s.kelas === "12";
         
         const jumlahTercentang = Object.values(berkas).filter(val => val === true).length;
         const persentase = Math.round((jumlahTercentang / 7) * 100);
@@ -713,25 +1173,33 @@ function renderTable() {
         Object.keys(labels).forEach(key => { 
             if(!berkas[key]) kurang.push(labels[key]); 
         });
-        const listKekurangan = kurang.map(item => `    ┕  ${item}`).join("\n");
 
         const pesanWA = `Assalamu'alaikum Warahmatullahi Wabarakatuh. Ayah/Bunda dari an. *${s.nama}*, masih terdapat beberapa berkas yang perlu dilengkapi...`;
 
+        let cardClass = "card card-santri";
+        if (isWaKosong) cardClass += " card-no-wa";
+
+        let statusBadge = `<span class="badge badge-kelas ms-1">${s.kelas}</span>`;
+        if (isKelasAkhir) {
+            statusBadge += ` <span class="badge badge-akhir ms-1"><i class="bi bi-exclamation-triangle-fill me-1"></i>KELAS AKHIR</span>`;
+        }
+
         htmlAccumulator += `
         <div class="col-12 item-santri">
-            <div class="card card-santri ${isWaKosong ? 'card-no-wa' : ''}">
+            <div class="${cardClass}">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <div>
                             <h6 class="fw-bold mb-0">
                                 ${s.nama} 
-                                <span class="badge badge-kelas ms-1">${s.kelas}</span>
+                                ${statusBadge}
                                 ${isWaKosong ? '<span class="badge bg-danger ms-1" style="font-size:0.6rem">WA KOSONG</span>' : ''}
                             </h6>
                         </div>
                         <div class="d-flex gap-3">
                             <i class="bi bi-pencil-square text-primary fs-5 btn-admin-only" style="cursor:pointer" onclick="bukaModalEdit('${id}', '${s.nama}', '${s.kelas}', '${s.wa}')"></i>
                             <i class="bi bi-trash text-danger fs-5 btn-admin-only" style="cursor:pointer" onclick="hapusSantri('${id}')"></i>
+                            ${isKelasAkhir ? `<i class="bi bi-award text-warning fs-5 btn-admin-only" style="cursor:pointer" onclick="luluskanSantri('${id}')" title="Luluskan Santri"></i>` : ''}
                         </div>
                     </div>
 
@@ -783,30 +1251,24 @@ function renderTable() {
         </div>`;
     });
 
-    box.innerHTML = htmlAccumulator || `<div class="text-center p-5 text-muted">Data tidak ditemukan</div>`;
+    box.innerHTML = htmlAccumulator || `<div class="text-center p-5 text-muted">Tidak ada santri aktif</div>`;
     
-    // Update pagination status
     updatePaginationControls();
-
-    // --- BAGIAN KRUSIAL ---
-    // Jalankan pembatasan akses setiap kali tabel digambar ulang
-    applyUserRestrictions(); 
+    applyUserRestrictions();
 }
-
-
 
 function updatePaginationControls() {
     const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
     document.getElementById("pageIndicator").innerText = `Halaman ${currentPage} dari ${totalPages}`;
     document.getElementById("btnPrev").disabled = currentPage === 1;
     document.getElementById("btnNext").disabled = currentPage === totalPages;
-    document.getElementById("countFilter").innerText = `Menampilkan ${filteredData.length} Santri`;
+    document.getElementById("countFilter").innerText = `Menampilkan ${filteredData.length} Santri Aktif`;
 }
 
 function changePage(direction) {
     currentPage += direction;
     renderTable();
-    window.scrollTo(0, 0); // Kembali ke atas saat pindah halaman
+    window.scrollTo(0, 0);
 }
 
 function checkbox(id, field, val, label) {
@@ -831,37 +1293,331 @@ function updateStatus(id, jenis, status) {
     });
 }
 
+// ===== TAB SANTRI LULUS =====
+function renderSantriLulus() {
+    const searchVal = document.getElementById("searchLulus")?.value?.toLowerCase() || "";
+    const kelasVal = document.getElementById("filterKelasLulus")?.value || "";
+
+    filteredDataLulus = currentData.filter(s => {
+        const matchSearch = s.nama.toLowerCase().includes(searchVal);
+        const matchKelas = kelasVal === "" || s.kelas === kelasVal;
+        return s.status_lulus === true && matchSearch && matchKelas;
+    });
+
+    // Update badge
+    document.getElementById("badgeJumlahLulus").innerText = filteredDataLulus.length;
+    document.getElementById("totalLulusCount").innerText = filteredDataLulus.length;
+    document.getElementById("menuBadgeSemua").innerText = filteredDataLulus.length;
+
+    currentPageLulus = 1;
+    renderTableLulus();
+    updateHapusButton();
+}
+
+function renderTableLulus() {
+    const box = document.getElementById("daftarSantriLulus");
+    const startIndex = (currentPageLulus - 1) * rowsPerPageLulus;
+    const endIndex = startIndex + rowsPerPageLulus;
+    const paginatedItems = filteredDataLulus.slice(startIndex, endIndex);
+
+    if (paginatedItems.length === 0) {
+        box.innerHTML = `<div class="text-center p-5 text-muted">
+            <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+            Tidak ada santri yang sudah lulus
+        </div>`;
+        updatePaginationControlsLulus();
+        updateHapusButton();
+        return;
+    }
+
+    let htmlAccumulator = "";
+    
+    paginatedItems.forEach(s => {
+        const id = s.id;
+        const isWaKosong = !s.wa || s.wa.toString().trim() === "" || s.wa.toString() === "0";
+        const berkas = s.berkas || {}; 
+        
+        const jumlahTercentang = Object.values(berkas).filter(val => val === true).length;
+        const persentase = Math.round((jumlahTercentang / 7) * 100);
+
+        htmlAccumulator += `
+        <div class="col-12 item-santri">
+            <div class="card card-santri card-lulus">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div>
+                            <h6 class="fw-bold mb-0">
+                                ${s.nama} 
+                                <span class="badge badge-kelas ms-1">${s.kelas}</span>
+                                <span class="badge badge-lulus ms-1"><i class="bi bi-award-fill me-1"></i>LULUS</span>
+                                ${isWaKosong ? '<span class="badge bg-danger ms-1" style="font-size:0.6rem">WA KOSONG</span>' : ''}
+                            </h6>
+                            ${s.keterangan_lulus ? `<small class="text-muted d-block">${s.keterangan_lulus}</small>` : ''}
+                        </div>
+                        <div class="d-flex gap-3 align-items-center">
+                            <i class="bi bi-pencil-square text-primary fs-5 btn-admin-only" style="cursor:pointer" onclick="bukaModalEdit('${id}', '${s.nama}', '${s.kelas}', '${s.wa}')"></i>
+                            <i class="bi bi-trash text-danger fs-5 btn-admin-only" style="cursor:pointer" onclick="hapusSantri('${id}')"></i>
+                            <i class="bi bi-arrow-return-left text-secondary fs-5 btn-admin-only" style="cursor:pointer" onclick="batalkanLulus('${id}')" title="Batalkan Kelulusan"></i>
+                            <input type="checkbox" class="form-check-input checkbox-hapus-massal" value="${id}" style="width:18px; height:18px; cursor:pointer; accent-color:#dc3545;" onchange="updateHapusButton()">
+                        </div>
+                    </div>
+
+                    <div class="bg-warning-subtle text-warning fw-bold mt-2 p-2 rounded-3 text-center">
+                        <i class="bi bi-award-fill me-2"></i>Santri Telah Dinyatakan Lulus
+                        ${s.keterangan_lulus ? `- ${s.keterangan_lulus}` : ''}
+                    </div>
+
+                    <div class="mt-2">
+                        <small class="text-muted">Kelengkapan Berkas: ${persentase}%</small>
+                        <div class="progress" style="height: 5px;">
+                            <div class="progress-bar bg-success" style="width: ${persentase}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    });
+
+    box.innerHTML = htmlAccumulator;
+    updatePaginationControlsLulus();
+    updateHapusButton();
+}
+
+function updatePaginationControlsLulus() {
+    const totalPages = Math.ceil(filteredDataLulus.length / rowsPerPageLulus) || 1;
+    document.getElementById("pageIndicatorLulus").innerText = `Halaman ${currentPageLulus} dari ${totalPages}`;
+    document.getElementById("btnPrevLulus").disabled = currentPageLulus === 1;
+    document.getElementById("btnNextLulus").disabled = currentPageLulus === totalPages;
+}
+
+function changePageLulus(direction) {
+    currentPageLulus += direction;
+    renderTableLulus();
+    window.scrollTo(0, 0);
+}
+
+function updateRowsPerPageLulus() {
+    rowsPerPageLulus = parseInt(document.getElementById("rowsPerPageLulus").value);
+    currentPageLulus = 1;
+    renderTableLulus();
+}
+
+function updateFilterKelasLulus(setKelas) {
+    const select = document.getElementById("filterKelasLulus");
+    if (!select) return;
+    
+    const currentVal = select.value;
+    select.innerHTML = '<option value="">Semua Kelas</option>';
+    
+    Array.from(setKelas).sort().forEach(kls => {
+        const opt = document.createElement("option");
+        opt.value = kls; 
+        opt.innerText = kls;
+        select.appendChild(opt);
+    });
+    
+    select.value = currentVal;
+}
+
+// ===== FUNGSI HAPUS DENGAN DROPDOWN =====
+function updateHapusButton() {
+    const checkboxes = document.querySelectorAll('.checkbox-hapus-massal:checked');
+    const btn = document.getElementById('btnHapusUtama');
+    const badgeCount = document.getElementById('hapusBadgeCount');
+    const btnText = document.getElementById('hapusBtnText');
+    const tooltip = document.getElementById('hapusTooltip');
+    const totalData = filteredDataLulus.length;
+
+    if (checkboxes.length > 0) {
+        btn.disabled = false;
+        badgeCount.textContent = checkboxes.length;
+        btnText.textContent = 'Hapus';
+        tooltip.textContent = `${checkboxes.length} santri dipilih`;
+        btn.classList.remove('mode-semua');
+    } else if (totalData > 0) {
+        btn.disabled = false;
+        badgeCount.textContent = totalData;
+        btnText.textContent = 'Hapus Semua';
+        tooltip.textContent = `Semua ${totalData} santri tampil`;
+        btn.classList.add('mode-semua');
+    } else {
+        btn.disabled = true;
+        badgeCount.textContent = '0';
+        btnText.textContent = 'Hapus';
+        tooltip.textContent = 'Tidak ada data';
+        btn.classList.remove('mode-semua');
+    }
+}
+
+function toggleHapusDropdown() {
+    const dropdown = document.getElementById('hapusDropdown');
+    const icon = document.getElementById('dropdownIcon');
+    
+    // Cek apakah tombol disabled
+    if (document.getElementById('btnHapusUtama').disabled) {
+        showToast('Tidak ada data untuk dihapus', 'warning');
+        return;
+    }
+    
+    dropdown.classList.toggle('show');
+    icon.classList.toggle('open');
+}
+
+// Tutup dropdown saat klik di luar
+document.addEventListener('click', function(event) {
+    const wrapper = document.querySelector('.btn-hapus-wrapper');
+    if (wrapper && !wrapper.contains(event.target)) {
+        document.getElementById('hapusDropdown').classList.remove('show');
+        document.getElementById('dropdownIcon').classList.remove('open');
+    }
+});
+
+function eksekusiHapus(mode) {
+    // Tutup dropdown
+    document.getElementById('hapusDropdown').classList.remove('show');
+    document.getElementById('dropdownIcon').classList.remove('open');
+    
+    if (mode === 'terpilih') {
+        hapusTerpilihLulus();
+    } else if (mode === 'semua') {
+        hapusSemuaLulus();
+    }
+}
+
+// ===== HAPUS TERPILIH =====
+function hapusTerpilihLulus() {
+    const checkboxes = document.querySelectorAll('.checkbox-hapus-massal:checked');
+    
+    if (checkboxes.length === 0) {
+        showToast("Pilih santri yang akan dihapus!", "warning");
+        return;
+    }
+
+    if (sessionStorage.getItem("userRole") !== "admin") {
+        showToast("Akses ditolak! Hanya Admin yang bisa menghapus data.", "error");
+        return;
+    }
+
+    mintaPin(async () => {
+        if (!confirm(`Anda akan menghapus ${checkboxes.length} santri lulus secara permanen. Lanjutkan?`)) return;
+        
+        const validasi = prompt(`Ketik 'HAPUS' untuk konfirmasi menghapus ${checkboxes.length} santri lulus:`);
+        if (validasi !== "HAPUS") {
+            showToast("Konfirmasi salah, penghapusan dibatalkan.", "warning");
+            return;
+        }
+
+        document.getElementById("loaderLulus").style.display = "block";
+
+        try {
+            const batch = db.batch();
+            let count = 0;
+
+            checkboxes.forEach(checkbox => {
+                const id = checkbox.value;
+                const ref = db.collection("santri").doc(id);
+                batch.delete(ref);
+                count++;
+            });
+
+            await batch.commit();
+            showToast(`${count} santri lulus berhasil dihapus!`, "success");
+            renderSantriLulus();
+        } catch (error) {
+            console.error("Error hapus terpilih:", error);
+            showToast("Gagal menghapus data!", "error");
+        } finally {
+            document.getElementById("loaderLulus").style.display = "none";
+        }
+    });
+}
+
+// ===== HAPUS SEMUA =====
+function hapusSemuaLulus() {
+    if (filteredDataLulus.length === 0) {
+        showToast("Tidak ada santri lulus untuk dihapus!", "warning");
+        return;
+    }
+
+    if (sessionStorage.getItem("userRole") !== "admin") {
+        showToast("Akses ditolak! Hanya Admin yang bisa menghapus data.", "error");
+        return;
+    }
+
+    const searchVal = document.getElementById("searchLulus")?.value || "(kosong)";
+    const kelasVal = document.getElementById("filterKelasLulus")?.value || "Semua Kelas";
+    const jumlahData = filteredDataLulus.length;
+    
+    const infoFilter = `🔍 Filter aktif:\n- Pencarian: "${searchVal}"\n- Kelas: ${kelasVal}\n📊 Total data: ${jumlahData} santri`;
+
+    mintaPin(async () => {
+        if (!confirm(`⚠️ PERINGATAN!\n\nAnda akan menghapus SEMUA santri lulus yang tampil.\n\n${infoFilter}\n\nTindakan ini TIDAK DAPAT DIBATALKAN!\n\nLanjutkan?`)) return;
+        
+        const validasi = prompt(`🔴 KONFIRMASI AKHIR\n\nKetik 'HAPUS SEMUA' untuk menghapus ${jumlahData} santri lulus:`);
+        if (validasi !== "HAPUS SEMUA") {
+            showToast("Konfirmasi salah, penghapusan dibatalkan.", "warning");
+            return;
+        }
+
+        document.getElementById("loaderLulus").style.display = "block";
+
+        try {
+            const batch = db.batch();
+            let count = 0;
+
+            filteredDataLulus.forEach(s => {
+                const ref = db.collection("santri").doc(s.id);
+                batch.delete(ref);
+                count++;
+            });
+
+            await batch.commit();
+            
+            const pesanSukses = jumlahData === 1 
+                ? `1 santri lulus berhasil dihapus!` 
+                : `${count} santri lulus berhasil dihapus semua!`;
+            
+            showToast(pesanSukses, "success");
+            
+            document.querySelectorAll('.checkbox-hapus-massal').forEach(cb => cb.checked = false);
+            renderSantriLulus();
+        } catch (error) {
+            console.error("Error hapus semua:", error);
+            showToast("Gagal menghapus data!", "error");
+        } finally {
+            document.getElementById("loaderLulus").style.display = "none";
+        }
+    });
+}
+
+// ===== FUNGSI CRUD =====
 async function simpanSantri() {
-    // 1. Cek Hak Akses
     if (sessionStorage.getItem("userRole") !== "admin") {
         showToast("Akses ditolak! Hanya Admin yang bisa menambah data.", "error");
         return;
     }
 
-    // 2. Ambil elemen input
     const nama = document.getElementById("namaSantri").value.trim();
     const kelas = document.getElementById("kelasSantri").value.trim();
     const wa = document.getElementById("waOrtu").value.trim();
 
-    // 3. Validasi Input Sederhana
     if (!nama || !kelas) {
         showToast("Nama dan Kelas wajib diisi!", "error");
         return;
     }
 
-    // Tampilkan Loader (Opsional jika Anda punya elemen loader)
     const btnSimpan = document.querySelector("#modalTambah .btn-primary");
     const originalText = btnSimpan.innerHTML;
     btnSimpan.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
     btnSimpan.disabled = true;
 
     try {
-        // 4. Struktur Data Santri Baru
         const santriBaru = {
             nama: nama,
             kelas: kelas,
-            wa: wa || "0", // Jika WA kosong, set ke "0"
-            data_lengkap: false, // Default awal pasti belum lengkap
+            wa: wa || "0",
+            data_lengkap: false,
+            status_lulus: false,
             tanggal_input: firebase.firestore.FieldValue.serverTimestamp(),
             berkas: {
                 kk: false,
@@ -874,18 +1630,14 @@ async function simpanSantri() {
             }
         };
 
-        // 5. Simpan ke Firestore
         await db.collection("santri").add(santriBaru);
 
-        // 6. Respon Sukses
         showToast(`Berhasil menambah santri: ${nama}`);
         
-        // Reset Form
         document.getElementById("namaSantri").value = "";
         document.getElementById("kelasSantri").value = "";
         document.getElementById("waOrtu").value = "";
 
-        // Tutup Modal
         const modalTambah = bootstrap.Modal.getInstance(document.getElementById('modalTambah'));
         modalTambah.hide();
 
@@ -893,12 +1645,10 @@ async function simpanSantri() {
         console.error("Error saat menyimpan:", error);
         showToast("Gagal menyimpan data ke cloud!", "error");
     } finally {
-        // Kembalikan tombol ke keadaan semula
         btnSimpan.innerHTML = originalText;
         btnSimpan.disabled = false;
     }
 }
-
 
 function updateSantri() {
     const id = document.getElementById("editId").value;
@@ -925,25 +1675,15 @@ function bukaModalEdit(id, nama, kelas, wa) {
 function hapusSantri(id) {
     const role = sessionStorage.getItem("userRole");
     
-    // 1. Cek Hak Akses
     if (role !== "admin") {
         showToast("Akses Ditolak! Hanya Admin yang boleh menghapus data.", "error");
         return;
     }
 
-    // 2. Konfirmasi Penghapusan
     if (confirm("Apakah Anda yakin ingin menghapus data santri ini? Tindakan ini tidak dapat dibatalkan.")) {
-        
-        // 3. Eksekusi ke Firebase Firestore
         db.collection("santri").doc(id).delete()
         .then(() => {
             showToast("Data santri berhasil dihapus", "success");
-            
-            // Opsional: Jika Anda menggunakan cache lokal/array, filter datanya
-            currentData = currentData.filter(item => item.id !== id);
-            
-            // Re-render tampilan
-            filterSantri();
         })
         .catch((error) => {
             console.error("Error menghapus dokumen: ", error);
@@ -951,299 +1691,6 @@ function hapusSantri(id) {
         });
     }
 }
-
-
-function hapusSemuaSantri() {
-    // Ambil nilai filter kelas saat ini
-    const kelasTerpilih = document.getElementById("filterKelas").value;
-    const keteranganAksi = kelasTerpilih ? `data santri KELAS ${kelasTerpilih}` : "SELURUH data santri";
-
-    mintaPin(async () => {
-        // Konfirmasi tahap 1
-        if (!confirm(`PERINGATAN! Anda akan menghapus ${keteranganAksi} secara permanen. Lanjutkan?`)) return;
-        
-        // Konfirmasi tahap 2 (Ketik konfirmasi)
-        const validasi = prompt(`Ketik 'HAPUS' untuk konfirmasi menghapus ${keteranganAksi}:`);
-        
-        if (validasi === "HAPUS") {
-            try {
-                let query;
-                
-                // Jika ada kelas yang difilter, buat query khusus kelas tersebut
-                if (kelasTerpilih) {
-                    query = await db.collection("santri").where("kelas", "==", kelasTerpilih).get();
-                } else {
-                    // Jika tidak ada filter, ambil semua data
-                    query = await db.collection("santri").get();
-                }
-
-                if (query.empty) {
-                    showToast("Tidak ada data yang bisa dihapus", "warning");
-                    return;
-                }
-
-                const batch = db.batch();
-                query.docs.forEach((doc) => batch.delete(doc.ref));
-                
-                await batch.commit();
-                
-                const pesanSukses = kelasTerpilih 
-                    ? `Data santri kelas ${kelasTerpilih} berhasil dihapus!` 
-                    : "Seluruh data santri berhasil dibersihkan!";
-                
-                showToast(pesanSukses, "error");
-            } catch (error) {
-                console.error("Error saat menghapus:", error);
-                showToast("Gagal menghapus data!", "error");
-            }
-        } else {
-            showToast("Konfirmasi salah, penghapusan dibatalkan.", "warning");
-        }
-    });
-}
-
-
-let tempWorkbook = null;
-
-async function importExcel(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-        try {
-            const data = new Uint8Array(e.target.result);
-            tempWorkbook = XLSX.read(data, { type: 'array' });
-            
-            const sheetNames = tempWorkbook.SheetNames;
-            const selectSheet = document.getElementById("selectSheet");
-            selectSheet.innerHTML = ""; // Bersihkan pilihan sebelumnya
-
-            sheetNames.forEach(name => {
-                const worksheet = tempWorkbook.Sheets[name];
-                
-                // Logika menghitung baris: XLSX utils decode_range
-                const ref = worksheet['!ref'];
-                let rowCount = 0;
-                if (ref) {
-                    const range = XLSX.utils.decode_range(ref);
-                    rowCount = range.e.r; // Mendapatkan index baris terakhir (0-indexed)
-                }
-
-                const opt = document.createElement("option");
-                opt.value = name;
-                // Menampilkan nama sheet & jumlah baris di dropdown
-                opt.innerText = `${name} (${rowCount} Baris Data)`;
-                opt.setAttribute('data-rows', rowCount);
-                selectSheet.appendChild(opt);
-            });
-
-            // Jalankan fungsi info untuk pertama kali (default index 0)
-            updateInfoBaris();
-
-            // Tampilkan Modal
-            const modalElement = document.getElementById('modalPilihSheet');
-            const modalSheet = new bootstrap.Modal(modalElement);
-            modalSheet.show();
-
-            // Pasang event listener saat pilihan dropdown berubah
-            selectSheet.onchange = updateInfoBaris;
-
-            // Logika Klik Tombol Import di dalam Modal
-            document.getElementById("btnProsesImport").onclick = function() {
-                const selectedSheetName = selectSheet.value;
-                modalSheet.hide();
-                eksekusiImport(selectedSheetName);
-            };
-
-        } catch (error) { 
-            console.error(error);
-            showToast("Gagal membaca file Excel", "error"); 
-        } finally {
-            // Reset input file agar bisa pilih file yang sama lagi jika gagal
-            event.target.value = ''; 
-        }
-    };
-    reader.readAsArrayBuffer(file);
-}
-
-// Fungsi untuk mengupdate teks info di dalam modal secara dinamis
-function updateInfoBaris() {
-    const select = document.getElementById("selectSheet");
-    const infoDiv = document.getElementById("infoSheet");
-    const textInfo = document.getElementById("textInfoBaris");
-    
-    if (select.options.length > 0) {
-        const selectedOpt = select.options[select.selectedIndex];
-        const rows = selectedOpt.getAttribute('data-rows');
-        
-        infoDiv.style.display = "block";
-        textInfo.innerText = `Terdeteksi kurang lebih ${rows} baris data pada sheet ini.`;
-    }
-}
-
-async function eksekusiImport(sheetName) {
-    document.getElementById("loader").style.display = "block";
-    
-    try {
-        const worksheet = tempWorkbook.Sheets[sheetName];
-        const json = XLSX.utils.sheet_to_json(worksheet);
-        
-        // 1. Ambil data eksis untuk cek duplikat
-        const snapshot = await db.collection("santri").get();
-        const existingData = snapshot.docs.map(doc => ({
-            nama: doc.data().nama ? doc.data().nama.toLowerCase().trim() : "",
-            kelas: doc.data().kelas ? doc.data().kelas.toString().toLowerCase().trim() : ""
-        }));
-
-        // Fungsi pembantu: Anggap '1', 'y', 'ada', atau 'x' sebagai TRUE
-        const cekStatus = (val) => {
-            if (!val) return false;
-            const v = val.toString().toLowerCase().trim();
-            return ['1', 'y', 'ya', 'v', 'ada', 'lengkap', 'x', 'true'].includes(v);
-        };
-
-        let batch = db.batch();
-        let countImported = 0;
-        let operationCount = 0; 
-        let barisKelasKosong = [];
-
-        // --- TAHAP 1: VALIDASI KELAS ---
-        for (let i = 0; i < json.length; i++) {
-            const row = json[i];
-            const nama = row['Nama Santri'] ? row['Nama Santri'].toString().trim() : null;
-            const kelas = row['Kelas'] ? row['Kelas'].toString().trim() : "";
-            
-            // Jika ada Nama tapi Kelas Kosong, catat barisnya
-            if (nama && (!kelas || kelas === "")) {
-                barisKelasKosong.push(i + 2); // i+2 karena index 0 dan header excel
-            }
-        }
-
-        if (barisKelasKosong.length > 0) {
-            alert(`❌ IMPORT DIBATALKAN!\nKolom 'Kelas' kosong pada baris: ${barisKelasKosong.join(", ")}.\nMohon lengkapi data di Excel.`);
-            return; // Berhenti total
-        }
-
-        // --- TAHAP 2: PROSES DATA ---
-        for (const row of json) {
-            const namaBaru = row['Nama Santri'] ? row['Nama Santri'].toString().trim() : null;
-            const kelasBaru = row['Kelas'] ? row['Kelas'].toString().trim() : "";
-            let waBaru = row['WhatsApp'] ? row['WhatsApp'].toString().trim() : "";
-            
-            if (waBaru.startsWith('0')) waBaru = '62' + waBaru.slice(1);
-
-            if (namaBaru) {
-                // Cek Duplikat (Nama + Kelas)
-                const isDuplicate = existingData.some(ex => 
-                    ex.nama === namaBaru.toLowerCase() && 
-                    ex.kelas === kelasBaru.toLowerCase()
-                );
-
-                if (!isDuplicate) {
-                    const berkas = {
-                        kk: cekStatus(row['Fc. KK']),
-                        akta: cekStatus(row['Fc. Akta']),
-                        ijazah: cekStatus(row['Fc. Ijazah Terakhir']),
-                        skl: cekStatus(row['SKL']),
-                        ktp_ayah: cekStatus(row['Fc. KTP Ayah']),
-                        ktp_ibu: cekStatus(row['Fc. KTP Ibu']),
-                        foto: cekStatus(row['Pas Foto'])
-                    };
-
-                    // Hitung otomatis jika semua berkas true
-                    const isLengkap = Object.values(berkas).every(v => v === true);
-
-                    const ref = db.collection("santri").doc();
-                    batch.set(ref, {
-                        nama: namaBaru, 
-                        kelas: kelasBaru, 
-                        wa: waBaru, 
-                        data_lengkap: isLengkap,
-                        berkas: berkas
-                    });
-
-                    countImported++;
-                    operationCount++;
-
-                    if (operationCount >= 500) {
-                        await batch.commit();
-                        batch = db.batch();
-                        operationCount = 0;
-                    }
-                }
-            }
-        }
-
-        if (operationCount > 0) await batch.commit();
-
-        if (countImported > 0) {
-            showToast(`${countImported} data berhasil diimport!`);
-        } else {
-            showToast("Tidak ada data baru (semua duplikat)", "warning");
-        }
-
-    } catch (error) {
-        console.error(error);
-        showToast("Proses import gagal", "error");
-    } finally {
-        document.getElementById("loader").style.display = "none";
-        tempWorkbook = null;
-        // Tutup modal jika ada
-        const modalPilih = bootstrap.Modal.getInstance(document.getElementById('modalPilihSheet'));
-        if(modalPilih) modalPilih.hide();
-    }
-}
-
-
-function exportExcel() {
-    if (currentData.length === 0) {
-        return showToast("Tidak ada data untuk diekspor", "warning");
-    }
-
-    // 1. Siapkan header dan format data
-    const dataExport = currentData.map((s, index) => {
-        return {
-            "No": index + 1,
-            "Nama Santri": s.nama,
-            "Kelas": s.kelas,
-            "WhatsApp": s.wa || "-",
-            "Fc. KK": s.berkas?.kk ? "Lengkap" : "Belum",
-            "Fc. Akta": s.berkas?.akta ? "Lengkap" : "Belum",
-            "Fc. Ijazah Terakhir": s.berkas?.ijazah ? "Lengkap" : "Belum",
-            "SKL": s.berkas?.skl ? "Lengkap" : "Belum",
-            "Fc. KTP Ayah": s.berkas?.ktp_ayah ? "Lengkap" : "Belum",
-            "Fc. KTP Ibu": s.berkas?.ktp_ibu ? "Lengkap" : "Belum",
-            "Pas Foto": s.berkas?.foto ? "Lengkap" : "Belum",
-            "Status Akhir": s.data_lengkap ? "LENGKAP" : "BELUM LENGKAP"
-        };
-    });
-
-    // 2. Buat Worksheet
-    const ws = XLSX.utils.json_to_sheet(dataExport);
-
-    // 3. Atur lebar kolom agar rapi (Opsional)
-    const wscols = [
-        {wch: 5},  // No
-        {wch: 25}, // Nama
-        {wch: 10}, // Kelas
-        {wch: 15}, // WA
-        {wch: 10}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 10}, // Berkas
-        {wch: 15}  // Status Akhir
-    ];
-    ws['!cols'] = wscols;
-
-    // 4. Buat Workbook dan simpan
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Data Berkas Santri");
-
-    // Tanggal hari ini untuk nama file
-    const tgl = new Date().toISOString().split('T')[0];
-    XLSX.writeFile(wb, `Rekap_Berkas_Santri_${tgl}.xlsx`);
-
-    showToast("File Excel berhasil diunduh");
-}
-
 
 function centangSemuaBerkas(id) {
     const ref = db.collection("santri").doc(id);
@@ -1254,7 +1701,7 @@ function centangSemuaBerkas(id) {
         "berkas.skl": true,
         "berkas.ktp_ayah": true,
         "berkas.ktp_ibu": true,
-        "berkas.foto": true, // Pastikan ini ada
+        "berkas.foto": true,
         "data_lengkap": true
     }).then(() => {
         showToast("Semua berkas ditandai lengkap", "success");
@@ -1271,7 +1718,7 @@ function kosongkanSemuaBerkas(id) {
             "berkas.skl": false,
             "berkas.ktp_ayah": false,
             "berkas.ktp_ibu": false,
-            "berkas.foto": false, // Pastikan ini ada
+            "berkas.foto": false,
             "data_lengkap": false
         }).then(() => {
             showToast("Semua berkas dikosongkan", "warning");
@@ -1282,93 +1729,49 @@ function kosongkanSemuaBerkas(id) {
     }
 }
 
-
-function kirimRekapGrup() {
-    if (filteredData.length === 0) return showToast("Tidak ada data untuk direkap", "warning");
-
-    // 1. Deteksi Filter Kelas untuk Judul Pesan
-    const filterKelasVal = document.getElementById("filterKelas").value;
-    const judulKelas = filterKelasVal ? `KELAS: ${filterKelasVal.toUpperCase()}` : "SEMUA KELAS";
-
-    let rincianSantri = "";
-    let nomor = 1;
-
-    filteredData.forEach((s) => {
-        // Hanya masukkan yang belum lengkap
-        if (!s.data_lengkap) {
-            let kurang = [];
-            const labels = { 
-                kk: "Fc. KK", 
-                akta: "Fc. Akta", 
-                ijazah: "Fc. Ijazah Terakhir", 
-                skl: "SKL", 
-                ktp_ayah: "Fc. KTP Ayah", 
-                ktp_ibu: "Fc. KTP Ibu", 
-                foto: "Pas Foto" 
-            };
-            
-            Object.keys(labels).forEach(key => {
-                if (!s.berkas || !s.berkas[key]) kurang.push(labels[key]);
-            });
-
-            // Tampilan per santri yang lebih rapi dengan bullet point
-            rincianSantri += `*${nomor}. ${s.nama}* (${s.kelas})\n   └ ⚠️ Kurang: _${kurang.join(", ")}_\n\n`;
-            nomor++;
-        }
-    });
-
-    if (rincianSantri === "") return showToast("Semua santri di daftar ini sudah lengkap", "success");
-
-    // 2. Draft Pesan dengan Desain Profesional
-    const pesanGrup = `*LAPORAN ADMINISTRASI SANTRI*
-*PONPES IBNUL JAUZY*
---------------------------------------------
-📍 *DAFTAR: ${judulKelas}*
-📅 Per Tanggal: ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}
---------------------------------------------
-
-Assalamu'alaikum Warahmatullahi Wabarakatuh.
-
-Ayah/Bunda yang dirahmati Allah, berikut adalah daftar santri yang belum melengkapi berkas administrasi:
-
-${rincianSantri}---
-📲 *PILIHAN PENGIRIMAN:*
-1️⃣ *ONLINE:* https://bit.ly/rekap_berkas
-2️⃣ *LANGSUNG:* Diantar ke Bagian Administrasi Pondok.
-
-Mohon bantuan Ayah/Bunda untuk segera melengkapinya demi tertibnya pendataan. 
-
-Jazakumullahu Khairan Katsiran.
-
-Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
-
-    // 3. Link Adaptif untuk Mobile (Android/iOS) dan Desktop
-    // Menggunakan api.whatsapp.com seringkali lebih stabil untuk 'share' ke grup di perangkat mobile
-    const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanGrup)}`;
+// ===== FITUR KELULUSAN =====
+async function luluskanSantri(id) {
+    if (!confirm("Apakah Anda yakin ingin meluluskan santri ini?")) return;
     
-    // Membuka jendela baru
-    const win = window.open(waUrl, '_blank');
-    if (win) {
-        win.focus();
-    } else {
-        // Fallback jika popup terblokir
-        location.href = waUrl;
+    try {
+        await db.collection("santri").doc(id).update({
+            status_lulus: true,
+            keterangan_lulus: "Lulus",
+            tanggal_lulus: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast("Santri berhasil diluluskan! 🎉", "success");
+    } catch (error) {
+        console.error(error);
+        showToast("Gagal meluluskan santri", "error");
     }
 }
 
+async function batalkanLulus(id) {
+    if (!confirm("Batalkan status kelulusan santri ini?")) return;
+    
+    try {
+        await db.collection("santri").doc(id).update({
+            status_lulus: false,
+            keterangan_lulus: firebase.firestore.FieldValue.delete()
+        });
+        showToast("Status kelulusan dibatalkan", "warning");
+        renderSantriLulus();
+    } catch (error) {
+        console.error(error);
+        showToast("Gagal membatalkan kelulusan", "error");
+    }
+}
 
-let daftarKelasUnik = [];
-
+// ===== FITUR KENAIKAN KELAS =====
 function inisialisasiMapping() {
-    // Ambil semua kelas yang ada saat ini dari currentData
-    const setKelas = new Set(currentData.map(s => s.kelas));
+    const setKelas = new Set(currentData.filter(s => !s.status_lulus).map(s => s.kelas));
     daftarKelasUnik = Array.from(setKelas).sort();
     
     const container = document.getElementById("mappingContainer");
-    container.innerHTML = ""; // Reset
+    container.innerHTML = "";
     
     if(daftarKelasUnik.length === 0) {
-        container.innerHTML = "<p class='text-center text-muted'>Tidak ada data kelas.</p>";
+        container.innerHTML = "<p class='text-center text-muted'>Tidak ada data kelas aktif.</p>";
         return;
     }
 
@@ -1409,8 +1812,7 @@ async function eksekusiKenaikanKelas() {
 
         if (tujuan === "") continue;
 
-        // Cari santri dengan kelas asal tersebut
-        const santriTerdampak = currentData.filter(s => s.kelas === asal);
+        const santriTerdampak = currentData.filter(s => s.kelas === asal && !s.status_lulus);
         
         santriTerdampak.forEach(s => {
             const ref = db.collection("santri").doc(s.id);
@@ -1431,15 +1833,162 @@ async function eksekusiKenaikanKelas() {
     }
 }
 
+// ===== FITUR KELULUSAN MODAL =====
+function inisialisasiKelulusan() {
+    filterKelulusanSaatIni = 'kelas9';
+    renderListSantriLulus();
+    updateFilterButtons();
+}
 
+function renderListSantriLulus() {
+    const container = document.getElementById("listSantriLulus");
+    container.innerHTML = "";
+    
+    let santriAktif = currentData.filter(s => {
+        const isKelasAkhir = s.kelas === "9" || s.kelas === "12";
+        return !s.status_lulus && isKelasAkhir;
+    });
+    
+    const countKelas9 = santriAktif.filter(s => s.kelas === "9").length;
+    const countKelas12 = santriAktif.filter(s => s.kelas === "12").length;
+    
+    document.getElementById("countKelas9").innerText = countKelas9;
+    document.getElementById("countKelas12").innerText = countKelas12;
+    document.getElementById("countSemua").innerText = santriAktif.length;
+    
+    let filteredSantri = santriAktif;
+    if (filterKelulusanSaatIni === 'kelas9') {
+        filteredSantri = santriAktif.filter(s => s.kelas === "9");
+    } else if (filterKelulusanSaatIni === 'kelas12') {
+        filteredSantri = santriAktif.filter(s => s.kelas === "12");
+    }
+    
+    document.getElementById("jumlahSantriLulus").innerHTML = `
+        <i class="bi bi-people-fill me-1"></i> ${filteredSantri.length} santri
+    `;
+    
+    if (filteredSantri.length === 0) {
+        container.innerHTML = `<p class='text-center text-muted my-3'>
+            <i class="bi bi-info-circle me-2"></i>
+            Tidak ada santri kelas ${filterKelulusanSaatIni === 'semua' ? '9 atau 12' : filterKelulusanSaatIni} yang aktif.
+        </p>`;
+        return;
+    }
+    
+    filteredSantri.forEach(s => {
+        const div = document.createElement("div");
+        const kelasColor = s.kelas === "9" ? "#0d47a1" : "#880e4f";
+        div.className = "list-santri-item p-2 border-bottom";
+        div.style.borderLeft = `4px solid ${kelasColor}`;
+        div.innerHTML = `
+            <div class="form-check mb-0">
+                <input class="form-check-input" type="checkbox" value="${s.id}" id="lulus_${s.id}">
+                <label class="form-check-label small fw-bold" for="lulus_${s.id}">
+                    ${s.nama} 
+                    <span class="badge badge-akhir" style="background:${kelasColor};">${s.kelas}</span>
+                    ${s.data_lengkap ? '<span class="badge bg-success ms-1">Lengkap</span>' : '<span class="badge bg-danger ms-1">Belum Lengkap</span>'}
+                    ${s.wa && s.wa !== "0" ? `<span class="badge bg-info ms-1"><i class="bi bi-whatsapp"></i></span>` : '<span class="badge bg-secondary ms-1">No WA</span>'}
+                </label>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+    
+    updateFilterButtons();
+}
+
+function updateFilterButtons() {
+    document.querySelectorAll('.btn-kelas-akhir').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    const filterMap = {
+        'kelas9': '.btn-kelas-9',
+        'kelas12': '.btn-kelas-12',
+        'semua': '.btn-semua-kelas'
+    };
+    
+    const selector = filterMap[filterKelulusanSaatIni];
+    if (selector) {
+        const btn = document.querySelector(selector);
+        if (btn) btn.classList.add('active');
+    }
+}
+
+function filterKelulusan(filter, button) {
+    filterKelulusanSaatIni = filter;
+    renderListSantriLulus();
+}
+
+function pilihSemuaSantriLulus() {
+    const checkboxes = document.querySelectorAll('#listSantriLulus input[type="checkbox"]');
+    const semuaTercentang = Array.from(checkboxes).every(cb => cb.checked);
+    
+    const tombolPilihSemua = document.querySelector('.btn-pilih-semua');
+    
+    if (!semuaTercentang) {
+        checkboxes.forEach(cb => cb.checked = true);
+        tombolPilihSemua.innerHTML = '<i class="bi bi-x-lg me-1"></i> Batal Pilih';
+        tombolPilihSemua.classList.add('active');
+        showToast('Semua santri dipilih', 'success');
+    } else {
+        checkboxes.forEach(cb => cb.checked = false);
+        tombolPilihSemua.innerHTML = '<i class="bi bi-check-all me-1"></i> Pilih Semua';
+        tombolPilihSemua.classList.remove('active');
+    }
+}
+
+async function prosesKelulusan() {
+    const checkboxes = document.querySelectorAll('#listSantriLulus input[type="checkbox"]:checked');
+    const keterangan = document.getElementById("keteranganLulus").value.trim();
+    
+    if (checkboxes.length === 0) {
+        showToast("Pilih minimal satu santri untuk diluluskan!", "warning");
+        return;
+    }
+    
+    if (!confirm(`Anda akan meluluskan ${checkboxes.length} santri dari kelas 9 dan 12. Lanjutkan?`)) return;
+    
+    document.getElementById("loader").style.display = "block";
+    
+    try {
+        const batch = db.batch();
+        let count = 0;
+        
+        checkboxes.forEach(checkbox => {
+            const id = checkbox.value;
+            const ref = db.collection("santri").doc(id);
+            batch.update(ref, { 
+                status_lulus: true,
+                keterangan_lulus: keterangan || "Lulus",
+                tanggal_lulus: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            count++;
+        });
+        
+        await batch.commit();
+        
+        showToast(`${count} santri berhasil dinyatakan lulus! 🎉`, "success");
+        
+        const modalKelulusan = bootstrap.Modal.getInstance(document.getElementById('modalKelulusan'));
+        modalKelulusan.hide();
+        
+    } catch (error) {
+        console.error("Error proses kelulusan:", error);
+        showToast("Gagal memproses kelulusan!", "error");
+    } finally {
+        document.getElementById("loader").style.display = "none";
+    }
+}
+
+// ===== FUNGSI LAINNYA =====
 function updateFilterKelas(setKelas) {
     const select = document.getElementById("filterKelas");
-    if (!select) return; // Guard clause jika elemen tidak ditemukan
+    if (!select) return;
     
     const currentVal = select.value;
     select.innerHTML = '<option value="">Semua Kelas</option>';
     
-    // Mengubah Set menjadi Array dan mengurutkannya
     Array.from(setKelas).sort().forEach(kls => {
         const opt = document.createElement("option");
         opt.value = kls; 
@@ -1447,45 +1996,340 @@ function updateFilterKelas(setKelas) {
         select.appendChild(opt);
     });
     
-    // Mengembalikan pilihan user sebelumnya agar tidak reset saat ada update data
     select.value = currentVal;
 }
 
-
 function updateRowsPerPage() {
-    // Ambil nilai dari select dan ubah ke tipe Number
     rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
-    
-    // Reset ke halaman 1 agar tidak terjadi error offset
     currentPage = 1; 
-    
-    // Render ulang tabel
     renderTable();
-    
-    // Opsional: scroll ke atas
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-
-
-function terapkanHakAkses() {
-    const role = sessionStorage.getItem("userRole");
+function kirimRekapGrup() {
+    const santriBelumLengkap = filteredData.filter(s => !s.data_lengkap && !s.status_lulus);
     
-    if (role === "user") {
-        // Sembunyikan tombol Import, Hapus, Tambah, dan Naik Kelas
-        const elemenAdmin = [
-            ".btn-success", // Tombol Import
-            ".btn-danger",  // Tombol Hapus Semua
-            ".btn-warning", // Tombol Naik Kelas
-            ".fab",         // Tombol Tambah (Floating Action Button)
-            ".bi-trash",    // Icon Hapus di setiap card
-            ".bi-pencil-square" // Icon Edit di setiap card
-        ];
+    if (santriBelumLengkap.length === 0) return showToast("Semua santri aktif sudah lengkap", "success");
 
-        elemenAdmin.forEach(selector => {
-            document.querySelectorAll(selector).forEach(el => el.style.setProperty("display", "none", "important"));
+    const filterKelasVal = document.getElementById("filterKelas").value;
+    const judulKelas = filterKelasVal ? `KELAS: ${filterKelasVal.toUpperCase()}` : "SEMUA KELAS";
+
+    let rincianSantri = "";
+    let nomor = 1;
+
+    santriBelumLengkap.forEach((s) => {
+        let kurang = [];
+        const labels = { 
+            kk: "Fc. KK", 
+            akta: "Fc. Akta", 
+            ijazah: "Fc. Ijazah Terakhir", 
+            skl: "SKL", 
+            ktp_ayah: "Fc. KTP Ayah", 
+            ktp_ibu: "Fc. KTP Ibu", 
+            foto: "Pas Foto" 
+        };
+        
+        Object.keys(labels).forEach(key => {
+            if (!s.berkas || !s.berkas[key]) kurang.push(labels[key]);
         });
+
+        rincianSantri += `*${nomor}. ${s.nama}* (${s.kelas})\n   └ ⚠️ Kurang: _${kurang.join(", ")}_\n\n`;
+        nomor++;
+    });
+
+    const pesanGrup = `*LAPORAN ADMINISTRASI SANTRI*
+*PONPES IBNUL JAUZY*
+--------------------------------------------
+📍 *DAFTAR: ${judulKelas}*
+📅 Per Tanggal: ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}
+--------------------------------------------
+
+Assalamu'alaikum Warahmatullahi Wabarakatuh.
+
+Ayah/Bunda yang dirahmati Allah, berikut adalah daftar santri yang belum melengkapi berkas administrasi:
+
+${rincianSantri}---
+📲 *PILIHAN PENGIRIMAN:*
+1️⃣ *ONLINE:* https://bit.ly/rekap_berkas
+2️⃣ *LANGSUNG:* Diantar ke Bagian Administrasi Pondok.
+
+Mohon bantuan Ayah/Bunda untuk segera melengkapinya demi tertibnya pendataan. 
+
+Jazakumullahu Khairan Katsiran.
+
+Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
+
+    const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanGrup)}`;
+    
+    const win = window.open(waUrl, '_blank');
+    if (win) {
+        win.focus();
+    } else {
+        location.href = waUrl;
     }
+}
+
+// ===== IMPORT/EXCEL =====
+let tempWorkbook = null;
+
+async function importExcel(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        try {
+            const data = new Uint8Array(e.target.result);
+            tempWorkbook = XLSX.read(data, { type: 'array' });
+            
+            const sheetNames = tempWorkbook.SheetNames;
+            const selectSheet = document.getElementById("selectSheet");
+            selectSheet.innerHTML = "";
+
+            sheetNames.forEach(name => {
+                const worksheet = tempWorkbook.Sheets[name];
+                const ref = worksheet['!ref'];
+                let rowCount = 0;
+                if (ref) {
+                    const range = XLSX.utils.decode_range(ref);
+                    rowCount = range.e.r;
+                }
+
+                const opt = document.createElement("option");
+                opt.value = name;
+                opt.innerText = `${name} (${rowCount} Baris Data)`;
+                opt.setAttribute('data-rows', rowCount);
+                selectSheet.appendChild(opt);
+            });
+
+            updateInfoBaris();
+
+            const modalElement = document.getElementById('modalPilihSheet');
+            const modalSheet = new bootstrap.Modal(modalElement);
+            modalSheet.show();
+
+            selectSheet.onchange = updateInfoBaris;
+
+            document.getElementById("btnProsesImport").onclick = function() {
+                const selectedSheetName = selectSheet.value;
+                modalSheet.hide();
+                eksekusiImport(selectedSheetName);
+            };
+
+        } catch (error) { 
+            console.error(error);
+            showToast("Gagal membaca file Excel", "error"); 
+        } finally {
+            event.target.value = ''; 
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function updateInfoBaris() {
+    const select = document.getElementById("selectSheet");
+    const infoDiv = document.getElementById("infoSheet");
+    const textInfo = document.getElementById("textInfoBaris");
+    
+    if (select.options.length > 0) {
+        const selectedOpt = select.options[select.selectedIndex];
+        const rows = selectedOpt.getAttribute('data-rows');
+        
+        infoDiv.style.display = "block";
+        textInfo.innerText = `Terdeteksi kurang lebih ${rows} baris data pada sheet ini.`;
+    }
+}
+
+async function eksekusiImport(sheetName) {
+    document.getElementById("loader").style.display = "block";
+    
+    try {
+        const worksheet = tempWorkbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
+        
+        const snapshot = await db.collection("santri").get();
+        const existingData = snapshot.docs.map(doc => ({
+            nama: doc.data().nama ? doc.data().nama.toLowerCase().trim() : "",
+            kelas: doc.data().kelas ? doc.data().kelas.toString().toLowerCase().trim() : ""
+        }));
+
+        const cekStatus = (val) => {
+            if (!val) return false;
+            const v = val.toString().toLowerCase().trim();
+            return ['1', 'y', 'ya', 'v', 'ada', 'lengkap', 'x', 'true'].includes(v);
+        };
+
+        let batch = db.batch();
+        let countImported = 0;
+        let operationCount = 0; 
+        let barisKelasKosong = [];
+
+        for (let i = 0; i < json.length; i++) {
+            const row = json[i];
+            const nama = row['Nama Santri'] ? row['Nama Santri'].toString().trim() : null;
+            const kelas = row['Kelas'] ? row['Kelas'].toString().trim() : "";
+            
+            if (nama && (!kelas || kelas === "")) {
+                barisKelasKosong.push(i + 2);
+            }
+        }
+
+        if (barisKelasKosong.length > 0) {
+            alert(`❌ IMPORT DIBATALKAN!\nKolom 'Kelas' kosong pada baris: ${barisKelasKosong.join(", ")}.\nMohon lengkapi data di Excel.`);
+            return;
+        }
+
+        for (const row of json) {
+            const namaBaru = row['Nama Santri'] ? row['Nama Santri'].toString().trim() : null;
+            const kelasBaru = row['Kelas'] ? row['Kelas'].toString().trim() : "";
+            let waBaru = row['WhatsApp'] ? row['WhatsApp'].toString().trim() : "";
+            
+            if (waBaru.startsWith('0')) waBaru = '62' + waBaru.slice(1);
+
+            if (namaBaru) {
+                const isDuplicate = existingData.some(ex => 
+                    ex.nama === namaBaru.toLowerCase() && 
+                    ex.kelas === kelasBaru.toLowerCase()
+                );
+
+                if (!isDuplicate) {
+                    const berkas = {
+                        kk: cekStatus(row['Fc. KK']),
+                        akta: cekStatus(row['Fc. Akta']),
+                        ijazah: cekStatus(row['Fc. Ijazah Terakhir']),
+                        skl: cekStatus(row['SKL']),
+                        ktp_ayah: cekStatus(row['Fc. KTP Ayah']),
+                        ktp_ibu: cekStatus(row['Fc. KTP Ibu']),
+                        foto: cekStatus(row['Pas Foto'])
+                    };
+
+                    const isLengkap = Object.values(berkas).every(v => v === true);
+
+                    const ref = db.collection("santri").doc();
+                    batch.set(ref, {
+                        nama: namaBaru, 
+                        kelas: kelasBaru, 
+                        wa: waBaru, 
+                        data_lengkap: isLengkap,
+                        status_lulus: false,
+                        berkas: berkas
+                    });
+
+                    countImported++;
+                    operationCount++;
+
+                    if (operationCount >= 500) {
+                        await batch.commit();
+                        batch = db.batch();
+                        operationCount = 0;
+                    }
+                }
+            }
+        }
+
+        if (operationCount > 0) await batch.commit();
+
+        if (countImported > 0) {
+            showToast(`${countImported} data berhasil diimport!`);
+        } else {
+            showToast("Tidak ada data baru (semua duplikat)", "warning");
+        }
+
+    } catch (error) {
+        console.error(error);
+        showToast("Proses import gagal", "error");
+    } finally {
+        document.getElementById("loader").style.display = "none";
+        tempWorkbook = null;
+        const modalPilih = bootstrap.Modal.getInstance(document.getElementById('modalPilihSheet'));
+        if(modalPilih) modalPilih.hide();
+    }
+}
+
+function exportExcel() {
+    if (currentData.length === 0) {
+        return showToast("Tidak ada data untuk diekspor", "warning");
+    }
+
+    const dataExport = currentData.map((s, index) => {
+        return {
+            "No": index + 1,
+            "Nama Santri": s.nama,
+            "Kelas": s.kelas,
+            "WhatsApp": s.wa || "-",
+            "Fc. KK": s.berkas?.kk ? "Lengkap" : "Belum",
+            "Fc. Akta": s.berkas?.akta ? "Lengkap" : "Belum",
+            "Fc. Ijazah Terakhir": s.berkas?.ijazah ? "Lengkap" : "Belum",
+            "SKL": s.berkas?.skl ? "Lengkap" : "Belum",
+            "Fc. KTP Ayah": s.berkas?.ktp_ayah ? "Lengkap" : "Belum",
+            "Fc. KTP Ibu": s.berkas?.ktp_ibu ? "Lengkap" : "Belum",
+            "Pas Foto": s.berkas?.foto ? "Lengkap" : "Belum",
+            "Status": s.status_lulus ? "LULUS" : (s.data_lengkap ? "LENGKAP" : "BELUM LENGKAP"),
+            "Keterangan Lulus": s.keterangan_lulus || "-"
+        };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(dataExport);
+    const wscols = [
+        {wch: 5}, {wch: 25}, {wch: 10}, {wch: 15},
+        {wch: 10}, {wch: 10}, {wch: 10}, {wch: 10},
+        {wch: 10}, {wch: 10}, {wch: 10},
+        {wch: 15}, {wch: 20}
+    ];
+    ws['!cols'] = wscols;
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Data Berkas Santri");
+
+    const tgl = new Date().toISOString().split('T')[0];
+    XLSX.writeFile(wb, `Rekap_Berkas_Santri_${tgl}.xlsx`);
+
+    showToast("File Excel berhasil diunduh");
+}
+
+// ===== HAPUS SEMUA SANTRI =====
+function hapusSemuaSantri() {
+    const kelasTerpilih = document.getElementById("filterKelas").value;
+    const keteranganAksi = kelasTerpilih ? `data santri KELAS ${kelasTerpilih}` : "SELURUH data santri";
+
+    mintaPin(async () => {
+        if (!confirm(`PERINGATAN! Anda akan menghapus ${keteranganAksi} secara permanen. Lanjutkan?`)) return;
+        
+        const validasi = prompt(`Ketik 'HAPUS' untuk konfirmasi menghapus ${keteranganAksi}:`);
+        
+        if (validasi === "HAPUS") {
+            try {
+                let query;
+                
+                if (kelasTerpilih) {
+                    query = await db.collection("santri").where("kelas", "==", kelasTerpilih).get();
+                } else {
+                    query = await db.collection("santri").get();
+                }
+
+                if (query.empty) {
+                    showToast("Tidak ada data yang bisa dihapus", "warning");
+                    return;
+                }
+
+                const batch = db.batch();
+                query.docs.forEach((doc) => batch.delete(doc.ref));
+                
+                await batch.commit();
+                
+                const pesanSukses = kelasTerpilih 
+                    ? `Data santri kelas ${kelasTerpilih} berhasil dihapus!` 
+                    : "Seluruh data santri berhasil dibersihkan!";
+                
+                showToast(pesanSukses, "error");
+            } catch (error) {
+                console.error("Error saat menghapus:", error);
+                showToast("Gagal menghapus data!", "error");
+            }
+        } else {
+            showToast("Konfirmasi salah, penghapusan dibatalkan.", "warning");
+        }
+    });
 }
 </script>
 
