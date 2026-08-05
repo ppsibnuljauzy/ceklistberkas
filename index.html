@@ -4034,7 +4034,7 @@
                 return;
             }
             const rows = document.querySelectorAll(".mapping-row");
-            
+
             // Kumpulkan semua pemetaan
             let mappingList = [];
             for (let row of rows) {
@@ -4052,7 +4052,7 @@
             // Buat daftar santri yang akan dinaikkan kelasnya
             let santriAkanNaik = [];
             let detailPerubahan = [];
-            
+
             for (let map of mappingList) {
                 const santriDariKelas = currentData.filter(s => s.kelas === map.asal && !s.status_lulus);
                 for (let s of santriDariKelas) {
@@ -4079,8 +4079,10 @@
                 const isDuplicate = currentData.some(existing => {
                     // Skip jika data yang sedang dicek adalah dirinya sendiri
                     if (existing.id === s.id) return false;
-                    const namaMatch = existing.nama && existing.nama.toLowerCase().trim() === s.nama.toLowerCase().trim();
-                    const kelasMatch = existing.kelas && existing.kelas.toString().toLowerCase().trim() === s.tujuan.toString().toLowerCase().trim();
+                    const namaMatch = existing.nama && existing.nama.toLowerCase().trim() === s.nama.toLowerCase()
+                        .trim();
+                    const kelasMatch = existing.kelas && existing.kelas.toString().toLowerCase().trim() === s.tujuan
+                        .toString().toLowerCase().trim();
                     return namaMatch && kelasMatch;
                 });
 
@@ -4098,7 +4100,7 @@
                     duplikatDitemukan.slice(0, 10).join('\n') +
                     (duplikatDitemukan.length > 10 ? `\n... dan ${duplikatDitemukan.length - 10} lainnya` : '') +
                     `\n\nSilakan periksa kembali pemetaan kelas tujuan.`;
-                
+
                 alert(pesanDuplikat);
                 showToast(`⚠️ Ditemukan ${duplikatDitemukan.length} duplikasi! Proses dibatalkan.`, "error");
                 return;
@@ -4300,17 +4302,37 @@
         }
 
         // ================================================================
-        // 24. REKAP WA
+        // 24. REKAP WA - DENGAN PENGELOMPOKAN PER KELAS & TANPA NO WA
         // ================================================================
         function kirimRekapGrup() {
+            // Ambil semua santri yang belum lengkap dan belum lulus
             const santriBelumLengkap = filteredData.filter(s => !s.data_lengkap && !s.status_lulus);
-            if (santriBelumLengkap.length === 0) return showToast("Semua santri aktif sudah lengkap", "success");
+            
+            if (santriBelumLengkap.length === 0) {
+                return showToast("Semua santri aktif sudah lengkap", "success");
+            }
+
+            // Kelompokkan berdasarkan kelas
+            const groupedByKelas = {};
+            santriBelumLengkap.forEach(s => {
+                const kelas = s.kelas || "Tidak Diketahui";
+                if (!groupedByKelas[kelas]) {
+                    groupedByKelas[kelas] = [];
+                }
+                groupedByKelas[kelas].push(s);
+            });
+
+            // Urutkan kelas
+            const sortedKelas = Object.keys(groupedByKelas).sort((a, b) => {
+                const numA = parseInt(a);
+                const numB = parseInt(b);
+                if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                return a.localeCompare(b);
+            });
 
             const filterKelasVal = document.getElementById("filterKelas").value;
-            const judulKelas = filterKelasVal ? `KELAS: ${filterKelasVal.toUpperCase()}` : "SEMUA KELAS";
+            const judulFilter = filterKelasVal ? `KELAS: ${filterKelasVal.toUpperCase()}` : "SEMUA KELAS";
 
-            let rincianSantri = "";
-            let nomor = 1;
             const labels = {
                 kk: "Fc. KK",
                 akta: "Fc. Akta",
@@ -4321,20 +4343,40 @@
                 foto: "Pas Foto"
             };
 
-            santriBelumLengkap.forEach((s) => {
-                let kurang = [];
-                Object.keys(labels).forEach(key => {
-                    if (!s.berkas || !s.berkas[key]) kurang.push(labels[key]);
+            // Bangun pesan dengan format per kelas - TANPA NOMOR WA
+            let rincianSantri = "";
+            let totalSemua = 0;
+
+            sortedKelas.forEach(kelas => {
+                const santriKelas = groupedByKelas[kelas];
+                totalSemua += santriKelas.length;
+                
+                rincianSantri += `▸ *KELAS ${kelas}* (${santriKelas.length} santri)\n`;
+                rincianSantri += `────────────────────\n`;
+
+                santriKelas.forEach((s, index) => {
+                    let kurang = [];
+                    Object.keys(labels).forEach(key => {
+                        if (!s.berkas || !s.berkas[key]) kurang.push(labels[key]);
+                    });
+                    // Hanya tampilkan nama, tanpa nomor WA
+                    rincianSantri += `${index + 1}. *${s.nama}*\n`;
+                    rincianSantri += `   └ ⚠️ Kurang: _${kurang.join(", ")}_\n`;
                 });
-                rincianSantri += `*${nomor}. ${s.nama}* (${s.kelas})\n   └ ⚠️ Kurang: _${kurang.join(", ")}_\n\n`;
-                nomor++;
+                rincianSantri += `\n`;
             });
+
+            const totalKelas = sortedKelas.length;
+            const infoTambahan = filterKelasVal ? 
+                `(Filter: Kelas ${filterKelasVal})` : 
+                `(${totalKelas} Kelas • ${totalSemua} Santri)`;
 
             const pesanGrup = `*LAPORAN ADMINISTRASI SANTRI*
         *PONPES IBNUL JAUZY*
         --------------------------------------------
-        📍 *DAFTAR: ${judulKelas}*
+        📍 *DAFTAR: ${judulFilter}*
         📅 Per Tanggal: ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}
+        📊 ${infoTambahan}
         --------------------------------------------
 
         Assalamu'alaikum Warahmatullahi Wabarakatuh.
@@ -4352,6 +4394,7 @@
 
         Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
 
+            // Buka WhatsApp
             const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanGrup)}`;
             const win = window.open(waUrl, '_blank');
             if (win) { win.focus(); } else { location.href = waUrl; }
