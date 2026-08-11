@@ -2749,11 +2749,11 @@
         // ================================================================
         let followUpData = [];
 
-        // ===== FUNGSI UNTUK MEMBUAT PESAN WA YANG SAMA =====
+        // ===== FUNGSI UNTUK MEMBUAT PESAN WA YANG LEBIH PROFESIONAL =====
         function buildWaMessage(santri) {
             const labels = {
                 kk: "Fc. KK",
-                akta: "Fc. Akta",
+                akta: "Fc. Akta Kelahiran",
                 ijazah: "Fc. Ijazah Terakhir",
                 skl: "SKL",
                 ktp_ayah: "Fc. KTP Ayah",
@@ -2767,11 +2767,57 @@
                 if (!berkas[key]) kurang.push(labels[key]);
             });
 
-            if (kurang.length === 0) {
-                return `Assalamu'alaikum Warahmatullahi Wabarakatuh. Ayah/Bunda dari an. *${santri.nama}*, semua berkas administrasi sudah lengkap. Terima kasih atas kerjasamanya. Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
-            }
+            const namaPondok = "Pondok Pesantren Ibnul Jauzy";
+            const adminInfo = "Admin/Tata Usaha";
 
-            return `Assalamu'alaikum Warahmatullahi Wabarakatuh. Ayah/Bunda dari an. *${santri.nama}*, masih terdapat beberapa berkas yang perlu dilengkapi: ${kurang.join(", ")}. Mohon segera dilengkapi. Terima kasih. Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
+            const pembuka = `Assalaamu'alaikum Warahmatullaahi Wabarakaatuh.`;
+
+            const namaSantri = `*${santri.nama}*`;
+            const kelasInfo = santri.kelas ? ` (Kelas ${santri.kelas})` : '';
+
+            if (kurang.length === 0) {
+                return `${pembuka}
+
+        Ayah/Bunda dari an. ${namaSantri}${kelasInfo},
+
+        Kami dari Bagian Administrasi *${namaPondok}* dengan ini menyampaikan bahwa seluruh berkas administrasi ananda sudah dinyatakan *LENGKAP* ✅.
+
+        Terima kasih atas kerjasama dan perhatian Ayah/Bunda selama ini.
+
+        Barakallahu fiikum.
+
+        Wassalaamu'alaikum Warahmatullaahi Wabarakaatuh.
+
+        ---
+        _Pesan ini dikirim oleh ${adminInfo}_
+        _${namaPondok}_`;
+            } else {
+                const daftarKurang = kurang.map((item, index) => `${index+1}. ${item}`).join('\n');
+
+                return `${pembuka}
+
+        Ayah/Bunda dari an. ${namaSantri}${kelasInfo},
+
+        Kami dari Bagian Administrasi *${namaPondok}* ingin menyampaikan bahwa masih terdapat beberapa berkas administrasi ananda yang *BELUM LENGKAP* ⚠️.
+
+        Berikut daftar berkas yang perlu dilengkapi:
+
+        ${daftarKurang}
+
+        Mohon bantuan Ayah/Bunda untuk segera melengkapi berkas-berkas tersebut dan menyerahkannya ke Bagian Administrasi Pondok.
+
+        Untuk informasi lebih lanjut, Ayah/Bunda dapat menghubungi nomor kontak ini atau langsung datang ke kantor pesantren Ibnul Jauzy.
+
+        Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.
+
+        Barakallahu fiikum.
+
+        Wassalaamu'alaikum Warahmatullaahi Wabarakaatuh.
+
+        ---
+        _Pesan ini dikirim oleh ${adminInfo}_
+        _${namaPondok}_`;
+            }
         }
 
         // ===== UPDATE DROPDOWN KELAS UNTUK FOLLOW-UP =====
@@ -2935,6 +2981,159 @@
             renderFollowUpTab();
         }
 
+        // ===== FUNGSI KIRIM WA KE SATU SANTRI =====
+        function kirimWaSantri(id) {
+            const santri = currentData.find(s => s.id === id);
+            if (!santri) {
+                showToast("Data santri tidak ditemukan!", "error");
+                return;
+            }
+
+            // Cek nomor WA
+            let waNumber = santri.wa ? santri.wa.toString().trim() : '';
+            if (!waNumber || waNumber === "" || waNumber === "0") {
+                showToast("⚠️ Nomor WhatsApp santri ini belum lengkap! Silakan lengkapi data terlebih dahulu.", "error");
+                return;
+            }
+
+            // Format nomor WA
+            waNumber = waNumber.replace(/\D/g, '');
+            if (waNumber.startsWith('0')) {
+                waNumber = '62' + waNumber.slice(1);
+            }
+            if (!waNumber.startsWith('62') && waNumber.length > 0) {
+                waNumber = '62' + waNumber;
+            }
+
+            // Validasi nomor minimal 10 digit
+            if (waNumber.length < 10) {
+                showToast("⚠️ Nomor WhatsApp tidak valid (minimal 10 digit)!", "error");
+                return;
+            }
+
+            const pesanWA = buildWaMessage(santri);
+            const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(pesanWA)}`;
+            
+            const win = window.open(waUrl, '_blank');
+            if (win) {
+                win.focus();
+            } else {
+                location.href = waUrl;
+            }
+        }
+
+        // ===== FUNGSI KIRIM REKAP GRUP =====
+        function kirimRekapGrup() {
+            // Ambil semua santri yang belum lengkap dan belum lulus
+            const santriBelumLengkap = filteredData.filter(s => !s.data_lengkap && !s.status_lulus);
+            
+            if (santriBelumLengkap.length === 0) {
+                return showToast("Semua santri aktif sudah lengkap", "success");
+            }
+
+            // CEK: Apakah ada santri dengan nomor WA tidak lengkap?
+            const santriTanpaWA = santriBelumLengkap.filter(s => {
+                const wa = s.wa ? s.wa.toString().trim() : '';
+                return !wa || wa === "" || wa === "0";
+            });
+
+            if (santriTanpaWA.length > 0) {
+                // Tampilkan notifikasi bahwa ada santri dengan nomor WA belum lengkap
+                const namaList = santriTanpaWA.map(s => `- ${s.nama} (${s.kelas || 'Kelas tidak diketahui'})`).join('\n');
+                showToast(`⚠️ Terdapat ${santriTanpaWA.length} santri dengan nomor WA belum lengkap!`, "error");
+                
+                // Tampilkan alert detail
+                alert(`⚠️ PERHATIAN!\n\nTerdapat ${santriTanpaWA.length} santri dengan nomor WhatsApp yang belum lengkap:\n\n${namaList}\n\nSilakan lengkapi nomor WA terlebih dahulu sebelum mengirim rekap.\n\nPengiriman rekap dibatalkan.`);
+                return;
+            }
+
+            // Kelompokkan berdasarkan kelas
+            const groupedByKelas = {};
+            santriBelumLengkap.forEach(s => {
+                const kelas = s.kelas || "Tidak Diketahui";
+                if (!groupedByKelas[kelas]) {
+                    groupedByKelas[kelas] = [];
+                }
+                groupedByKelas[kelas].push(s);
+            });
+
+            // Urutkan kelas
+            const sortedKelas = Object.keys(groupedByKelas).sort((a, b) => {
+                const numA = parseInt(a);
+                const numB = parseInt(b);
+                if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                return a.localeCompare(b);
+            });
+
+            const filterKelasVal = document.getElementById("filterKelas").value;
+            const judulFilter = filterKelasVal ? `KELAS: ${filterKelasVal.toUpperCase()}` : "SEMUA KELAS";
+
+            const labels = {
+                kk: "Fc. KK",
+                akta: "Fc. Akta",
+                ijazah: "Fc. Ijazah Terakhir",
+                skl: "SKL",
+                ktp_ayah: "Fc. KTP Ayah",
+                ktp_ibu: "Fc. KTP Ibu",
+                foto: "Pas Foto"
+            };
+
+            // Bangun pesan dengan format per kelas
+            let rincianSantri = "";
+            let totalSemua = 0;
+
+            sortedKelas.forEach(kelas => {
+                const santriKelas = groupedByKelas[kelas];
+                totalSemua += santriKelas.length;
+                
+                rincianSantri += `▸ *KELAS ${kelas}* (${santriKelas.length} santri)\n`;
+                rincianSantri += `────────────────────\n`;
+
+                santriKelas.forEach((s, index) => {
+                    let kurang = [];
+                    Object.keys(labels).forEach(key => {
+                        if (!s.berkas || !s.berkas[key]) kurang.push(labels[key]);
+                    });
+                    rincianSantri += `${index + 1}. *${s.nama}*\n`;
+                    rincianSantri += `   └ ⚠️ Kurang: _${kurang.join(", ")}_\n`;
+                });
+                rincianSantri += `\n`;
+            });
+
+            const totalKelas = sortedKelas.length;
+            const infoTambahan = filterKelasVal ? 
+                `(Filter: Kelas ${filterKelasVal})` : 
+                `(${totalKelas} Kelas • ${totalSemua} Santri)`;
+
+            const pesanGrup = `*LAPORAN ADMINISTRASI SANTRI*
+        *PONPES IBNUL JAUZY*
+        --------------------------------------------
+        📍 *DAFTAR: ${judulFilter}*
+        📅 Per Tanggal: ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}
+        📊 ${infoTambahan}
+        --------------------------------------------
+
+        Assalamu'alaikum Warahmatullahi Wabarakatuh.
+
+        Ayah/Bunda yang dirahmati Allah, berikut adalah daftar santri yang belum melengkapi berkas administrasi:
+
+        ${rincianSantri}---
+        📲 *PILIHAN PENGIRIMAN:*
+        1️⃣ *ONLINE:* https://bit.ly/rekap_berkas
+        2️⃣ *LANGSUNG:* Diantar ke Bagian Administrasi Pondok.
+
+        Mohon bantuan Ayah/Bunda untuk segera melengkapinya demi tertibnya pendataan.
+
+        Jazakumullahu Khairan Katsiran.
+
+        Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
+
+            // Buka WhatsApp
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanGrup)}`;
+            const win = window.open(waUrl, '_blank');
+            if (win) { win.focus(); } else { location.href = waUrl; }
+        }
+
         function renderFollowUpTab() {
             const container = document.getElementById('followupContainer');
 
@@ -2977,7 +3176,6 @@
             let html = '';
             let counter = 0;
             filteredDataFollowUp.forEach(s => {
-                // Tampilkan semua termasuk yang lengkap, tapi dengan label berbeda
                 const isWaKosong = !s.wa || s.wa.toString().trim() === "" || s.wa.toString() === "0";
 
                 let waNumber = s.wa ? s.wa.toString().trim() : '';
@@ -3002,15 +3200,6 @@
                 if (s.persentase > 30) barColor = 'bg-warning';
                 if (s.persentase > 60) barColor = 'bg-info';
                 if (s.persentase === 100) barColor = 'bg-success';
-
-                const pesanWA = buildWaMessage(s);
-
-                let waUrl = '#';
-                let waButtonDisabled = true;
-                if (hasValidWa && waNumber.length > 0) {
-                    waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(pesanWA)}`;
-                    waButtonDisabled = false;
-                }
 
                 // Border color berdasarkan priority
                 let borderColor = '#6c757d';
@@ -3047,12 +3236,11 @@
                             <div class="actions">
                                 <span class="priority-badge ${s.priorityClass}">${s.priorityLabel}</span>
                                 ${s.priority !== 'complete' ? `
-                                    <a href="${waUrl}" 
-                                       target="_blank" 
-                                       class="btn btn-success btn-sm ${waButtonDisabled ? 'disabled' : ''}"
-                                       title="${waButtonDisabled ? 'Nomor WhatsApp tidak valid' : 'Kirim WA via WhatsApp'}">
+                                    <button class="btn btn-success btn-sm ${!hasValidWa ? 'disabled' : ''}" 
+                                            onclick="kirimWaSantri('${s.id}')"
+                                            title="${!hasValidWa ? 'Nomor WhatsApp tidak valid' : 'Kirim WA ke orang tua'}">
                                         <i class="bi bi-whatsapp"></i>
-                                    </a>
+                                    </button>
                                 ` : ''}
                                 <button class="btn btn-outline-primary btn-sm" onclick="bukaModalEdit('${s.id}', '${s.nama}', '${s.kelas}', '${s.wa}')" title="Edit Data">
                                     <i class="bi bi-pencil"></i>
@@ -3280,7 +3468,20 @@
                     waNumber = '62' + waNumber;
                 }
                 const hasValidWa = waNumber.length > 8 && !isWaKosong;
-                const waUrl = hasValidWa ? `https://wa.me/${waNumber}?text=${encodeURIComponent(pesanWA)}` : '#';
+
+                // Gunakan fungsi kirimWaSantri
+                const waButtonHtml = isWaKosong ? 
+                    `<button class="btn btn-secondary btn-sm mt-3 w-100 py-2" disabled>
+                        <i class="bi bi-exclamation-triangle me-2"></i>WA Tidak Tersedia
+                    </button>` :
+                    (s.data_lengkap ? 
+                        `<button class="btn btn-success btn-sm mt-3 w-100 py-2" onclick="kirimWaSantri('${id}')">
+                            <i class="bi bi-whatsapp me-2"></i>Kirim WA (Lengkap)
+                        </button>` :
+                        `<button class="btn wa-btn btn-sm mt-3 w-100 py-2" onclick="kirimWaSantri('${id}')">
+                            <i class="bi bi-whatsapp me-2"></i>Kirim Notif Kekurangan
+                        </button>`
+                    );
 
                 htmlAccumulator += `
                         <div class="col-12 item-santri">
@@ -3336,13 +3537,7 @@
                                         `<div class="bg-success-subtle text-success small fw-bold mt-3 p-2 rounded-3 text-center">
                                             <i class="bi bi-check-circle-fill me-1"></i> Berkas Lengkap
                                         </div>` :
-                                        isWaKosong ?
-                                        `<div class="bg-secondary-subtle text-secondary small fw-bold mt-3 p-2 rounded-3 text-center">
-                                            <i class="bi bi-exclamation-triangle-fill me-1"></i> No. WA Tidak Tersedia
-                                        </div>` :
-                                        `<a href="${waUrl}" target="_blank" class="btn wa-btn btn-sm mt-3 w-100 py-2">
-                                            <i class="bi bi-whatsapp me-2"></i>Kirim Notif Kekurangan
-                                        </a>`
+                                        `${waButtonHtml}`
                                     }
                                 </div>
                             </div>
@@ -4302,106 +4497,7 @@
         }
 
         // ================================================================
-        // 24. REKAP WA - DENGAN PENGELOMPOKAN PER KELAS & TANPA NO WA
-        // ================================================================
-        function kirimRekapGrup() {
-            // Ambil semua santri yang belum lengkap dan belum lulus
-            const santriBelumLengkap = filteredData.filter(s => !s.data_lengkap && !s.status_lulus);
-            
-            if (santriBelumLengkap.length === 0) {
-                return showToast("Semua santri aktif sudah lengkap", "success");
-            }
-
-            // Kelompokkan berdasarkan kelas
-            const groupedByKelas = {};
-            santriBelumLengkap.forEach(s => {
-                const kelas = s.kelas || "Tidak Diketahui";
-                if (!groupedByKelas[kelas]) {
-                    groupedByKelas[kelas] = [];
-                }
-                groupedByKelas[kelas].push(s);
-            });
-
-            // Urutkan kelas
-            const sortedKelas = Object.keys(groupedByKelas).sort((a, b) => {
-                const numA = parseInt(a);
-                const numB = parseInt(b);
-                if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-                return a.localeCompare(b);
-            });
-
-            const filterKelasVal = document.getElementById("filterKelas").value;
-            const judulFilter = filterKelasVal ? `KELAS: ${filterKelasVal.toUpperCase()}` : "SEMUA KELAS";
-
-            const labels = {
-                kk: "Fc. KK",
-                akta: "Fc. Akta",
-                ijazah: "Fc. Ijazah Terakhir",
-                skl: "SKL",
-                ktp_ayah: "Fc. KTP Ayah",
-                ktp_ibu: "Fc. KTP Ibu",
-                foto: "Pas Foto"
-            };
-
-            // Bangun pesan dengan format per kelas - TANPA NOMOR WA
-            let rincianSantri = "";
-            let totalSemua = 0;
-
-            sortedKelas.forEach(kelas => {
-                const santriKelas = groupedByKelas[kelas];
-                totalSemua += santriKelas.length;
-                
-                rincianSantri += `▸ *KELAS ${kelas}* (${santriKelas.length} santri)\n`;
-                rincianSantri += `────────────────────\n`;
-
-                santriKelas.forEach((s, index) => {
-                    let kurang = [];
-                    Object.keys(labels).forEach(key => {
-                        if (!s.berkas || !s.berkas[key]) kurang.push(labels[key]);
-                    });
-                    // Hanya tampilkan nama, tanpa nomor WA
-                    rincianSantri += `${index + 1}. *${s.nama}*\n`;
-                    rincianSantri += `   └ ⚠️ Kurang: _${kurang.join(", ")}_\n`;
-                });
-                rincianSantri += `\n`;
-            });
-
-            const totalKelas = sortedKelas.length;
-            const infoTambahan = filterKelasVal ? 
-                `(Filter: Kelas ${filterKelasVal})` : 
-                `(${totalKelas} Kelas • ${totalSemua} Santri)`;
-
-            const pesanGrup = `*LAPORAN ADMINISTRASI SANTRI*
-        *PONPES IBNUL JAUZY*
-        --------------------------------------------
-        📍 *DAFTAR: ${judulFilter}*
-        📅 Per Tanggal: ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}
-        📊 ${infoTambahan}
-        --------------------------------------------
-
-        Assalamu'alaikum Warahmatullahi Wabarakatuh.
-
-        Ayah/Bunda yang dirahmati Allah, berikut adalah daftar santri yang belum melengkapi berkas administrasi:
-
-        ${rincianSantri}---
-        📲 *PILIHAN PENGIRIMAN:*
-        1️⃣ *ONLINE:* https://bit.ly/rekap_berkas
-        2️⃣ *LANGSUNG:* Diantar ke Bagian Administrasi Pondok.
-
-        Mohon bantuan Ayah/Bunda untuk segera melengkapinya demi tertibnya pendataan.
-
-        Jazakumullahu Khairan Katsiran.
-
-        Wassalamu'alaikum Warahmatullahi Wabarakatuh.`;
-
-            // Buka WhatsApp
-            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanGrup)}`;
-            const win = window.open(waUrl, '_blank');
-            if (win) { win.focus(); } else { location.href = waUrl; }
-        }
-
-        // ================================================================
-        // 25. IMPORT / EXPORT
+        // 24. IMPORT / EXPORT
         // ================================================================
         let tempWorkbook = null;
 
@@ -4620,7 +4716,7 @@
         }
 
         // ================================================================
-        // 26. HAPUS SEMUA SANTRI
+        // 25. HAPUS SEMUA SANTRI
         // ================================================================
         function hapusSemuaSantri() {
             if (sessionRole !== 'admin') {
@@ -4663,7 +4759,7 @@
         }
 
         // ================================================================
-        // 27. START APP
+        // 26. START APP
         // ================================================================
         async function startApp() {
             await loadPins();
