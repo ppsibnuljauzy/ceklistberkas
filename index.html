@@ -1216,6 +1216,161 @@
             cursor: not-allowed;
             transform: none !important;
         }
+
+
+/* ===== MODAL KONFIRMASI UNIVERSAL ===== */
+.modal-konfirmasi .modal-content {
+    border-radius: 20px !important;
+    overflow: hidden;
+}
+
+.konfirmasi-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+/* Varian warna icon */
+.konfirmasi-icon-wrapper.success {
+    background: rgba(25, 135, 84, 0.12);
+    color: #198754;
+}
+.konfirmasi-icon-wrapper.danger {
+    background: rgba(220, 53, 69, 0.12);
+    color: #dc3545;
+}
+.konfirmasi-icon-wrapper.warning {
+    background: rgba(255, 193, 7, 0.15);
+    color: #d39e00;
+}
+.konfirmasi-icon-wrapper.info {
+    background: rgba(13, 110, 253, 0.12);
+    color: #0d6efd;
+}
+.konfirmasi-icon-wrapper.purple {
+    background: rgba(156, 39, 176, 0.12);
+    color: #9c27b0;
+}
+
+.konfirmasi-info-box {
+    background: var(--bg-input);
+    border-radius: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--border-color);
+}
+
+.konfirmasi-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 0.85rem;
+}
+.konfirmasi-info-row:not(:last-child) {
+    border-bottom: 1px dashed var(--border-color);
+}
+.konfirmasi-info-row .label {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+.konfirmasi-info-row .value {
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: right;
+}
+
+.konfirmasi-message {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    text-align: center;
+    font-weight: 500;
+    padding: 0 10px;
+}
+
+.konfirmasi-warning {
+    background: rgba(255, 193, 7, 0.12);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #856404;
+    display: flex;
+    align-items: center;
+}
+
+[data-bs-theme="dark"] .konfirmasi-warning {
+    background: rgba(255, 193, 7, 0.08);
+    color: #ffd93d;
+}
+
+/* Tombol konfirmasi */
+#btnKonfirmasiYa.success {
+    background: linear-gradient(135deg, #198754, #146c43);
+    color: white;
+    border: none;
+}
+#btnKonfirmasiYa.success:hover {
+    background: linear-gradient(135deg, #146c43, #0f5132);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+}
+#btnKonfirmasiYa.danger {
+    background: linear-gradient(135deg, #dc3545, #b02a37);
+    color: white;
+    border: none;
+}
+#btnKonfirmasiYa.danger:hover {
+    background: linear-gradient(135deg, #b02a37, #8b1e2b);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+#btnKonfirmasiYa.warning {
+    background: linear-gradient(135deg, #ffc107, #d39e00);
+    color: #000;
+    border: none;
+}
+#btnKonfirmasiYa.warning:hover {
+    background: linear-gradient(135deg, #d39e00, #b38600);
+    color: #000;
+    transform: translateY(-1px);
+}
+#btnKonfirmasiYa.purple {
+    background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+    color: white;
+    border: none;
+}
+#btnKonfirmasiYa.purple:hover {
+    background: linear-gradient(135deg, #6a1b9a, #4a148c);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
+}
+
+/* Badge dokumen di modal */
+.dok-badge-mini {
+    display: inline-block;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    margin: 2px;
+    font-weight: 600;
+}
+.dok-badge-mini.checked {
+    background: rgba(25, 135, 84, 0.12);
+    border-color: rgba(25, 135, 84, 0.4);
+    color: #198754;
+}
     </style>
 </head>
 <body>
@@ -2083,6 +2238,46 @@
             </div>
         </div>
 
+        <!-- ===== MODAL KONFIRMASI UNIVERSAL ===== -->
+<div class="modal fade modal-konfirmasi" id="modalKonfirmasi" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0 pb-0">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="konfirmasi-icon-wrapper" id="konfirmasiIconWrapper">
+                        <i class="bi bi-question-circle-fill" id="konfirmasiIcon"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="konfirmasiTitle">Konfirmasi</h5>
+                        <p class="small text-muted mb-0" id="konfirmasiSubtitle">Mohon periksa kembali</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body pt-3">
+                <div class="konfirmasi-info-box mb-3" id="konfirmasiInfoBox">
+                    <!-- Info detail akan diisi JS -->
+                </div>
+                <div class="konfirmasi-message" id="konfirmasiMessage">
+                    Apakah Anda yakin ingin melanjutkan?
+                </div>
+                <div class="konfirmasi-warning mt-3" id="konfirmasiWarning" style="display:none;">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span id="konfirmasiWarningText"></span>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light flex-fill" data-bs-dismiss="modal" style="border-radius:12px;">
+                    <i class="bi bi-x-lg me-1"></i> Batal
+                </button>
+                <button type="button" class="btn flex-fill" id="btnKonfirmasiYa" style="border-radius:12px;">
+                    <i class="bi bi-check-lg me-1"></i> Ya, Lanjutkan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
     </div><!-- end appContent -->
 
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js">
@@ -2229,6 +2424,114 @@
                 } 
             }).showToast();
         }
+
+
+// ================================================================
+// MODAL KONFIRMASI UNIVERSAL
+// ================================================================
+let konfirmasiCallback = null;
+
+/**
+ * Tampilkan modal konfirmasi kustom
+ * @param {Object} options - Konfigurasi modal
+ * @param {string} options.title - Judul modal
+ * @param {string} options.subtitle - Subjudul
+ * @param {string} options.message - Pesan utama
+ * @param {Array} options.infoRows - Array of {label, value} untuk info box
+ * @param {string} options.warning - Teks warning (opsional)
+ * @param {string} options.variant - 'success' | 'danger' | 'warning' | 'info' | 'purple'
+ * @param {string} options.icon - Class icon bootstrap (opsional, auto berdasarkan variant)
+ * @param {string} options.btnText - Teks tombol konfirmasi
+ * @param {Function} options.onConfirm - Callback saat dikonfirmasi
+ */
+function showKonfirmasi(options) {
+    const {
+        title = 'Konfirmasi',
+        subtitle = 'Mohon periksa kembali',
+        message = 'Apakah Anda yakin ingin melanjutkan?',
+        infoRows = [],
+        warning = '',
+        variant = 'info',
+        icon = '',
+        btnText = 'Ya, Lanjutkan',
+        onConfirm = null
+    } = options;
+
+    // Set title & subtitle
+    document.getElementById('konfirmasiTitle').textContent = title;
+    document.getElementById('konfirmasiSubtitle').textContent = subtitle;
+    document.getElementById('konfirmasiMessage').textContent = message;
+
+    // Set icon wrapper variant
+    const iconWrapper = document.getElementById('konfirmasiIconWrapper');
+    iconWrapper.className = 'konfirmasi-icon-wrapper ' + variant;
+
+    // Set icon
+    const iconEl = document.getElementById('konfirmasiIcon');
+    const iconMap = {
+        success: 'bi-check-circle-fill',
+        danger: 'bi-trash3-fill',
+        warning: 'bi-exclamation-triangle-fill',
+        info: 'bi-info-circle-fill',
+        purple: 'bi-shield-check'
+    };
+    iconEl.className = 'bi ' + (icon || iconMap[variant] || 'bi-question-circle-fill');
+
+    // Set info rows
+    const infoBox = document.getElementById('konfirmasiInfoBox');
+    if (infoRows.length > 0) {
+        infoBox.style.display = 'block';
+        infoBox.innerHTML = infoRows.map(row =>
+            `<div class="konfirmasi-info-row">
+                <span class="label">${row.label}</span>
+                <span class="value">${row.value}</span>
+            </div>`
+        ).join('');
+    } else {
+        infoBox.style.display = 'none';
+    }
+
+    // Set warning
+    const warningEl = document.getElementById('konfirmasiWarning');
+    const warningText = document.getElementById('konfirmasiWarningText');
+    if (warning) {
+        warningEl.style.display = 'flex';
+        warningText.textContent = warning;
+    } else {
+        warningEl.style.display = 'none';
+    }
+
+    // Set button
+    const btnYa = document.getElementById('btnKonfirmasiYa');
+    btnYa.className = 'btn flex-fill ' + variant;
+    btnYa.innerHTML = `<i class="bi bi-check-lg me-1"></i> ${btnText}`;
+
+    // Set callback
+    konfirmasiCallback = onConfirm;
+
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('modalKonfirmasi'));
+    modal.show();
+}
+
+// Handler tombol "Ya, Lanjutkan"
+document.addEventListener('DOMContentLoaded', function() {
+    const btnYa = document.getElementById('btnKonfirmasiYa');
+    if (btnYa) {
+        btnYa.addEventListener('click', function() {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalKonfirmasi'));
+            modal.hide();
+            if (typeof konfirmasiCallback === 'function') {
+                // Delay sedikit agar modal smooth tertutup dulu
+                setTimeout(() => {
+                    konfirmasiCallback();
+                    konfirmasiCallback = null;
+                }, 250);
+            }
+        });
+    }
+});
+
 
         function formatRupiah(angka) {
             if (angka === undefined || angka === null || isNaN(angka)) return '0';
@@ -2882,33 +3185,41 @@
             container.innerHTML = html;
         }
 
-        // ================================================================
-        // 14. FILTER & RENDER SANTRI AKTIF
-        // ================================================================
-        function filterSantri() {
-            const searchVal = document.getElementById("searchInput").value.toLowerCase();
-            const kelasVal = document.getElementById("filterKelas").value;
-            const statusVal = document.getElementById("filterStatus").value;
-            const lulusVal = document.getElementById("filterLulus").value;
-            const isFocusMode = document.getElementById("focusMode").checked;
-            filteredData = currentData.filter(s => {
-                const isWaKosong = !s.wa || s.wa.toString().trim() === "" || s.wa.toString() === "0";
-                const matchSearch = s.nama.toLowerCase().includes(searchVal);
-                const matchKelas = kelasVal === "" || s.kelas === kelasVal;
-                let matchStatus = true;
-                if (statusVal === "lengkap") matchStatus = s.data_lengkap && !s.status_lulus;
-                if (statusVal === "belum") matchStatus = !s.data_lengkap && !s.status_lulus;
-                if (statusVal === "no_wa") matchStatus = isWaKosong && !s.status_lulus;
-                let matchLulus = true;
-                if (lulusVal === "aktif") matchLulus = !s.status_lulus;
-                if (lulusVal === "lulus") matchLulus = s.status_lulus === true;
-                const focusFilter = isFocusMode ? (!s.data_lengkap && !s.status_lulus) : true;
-                return matchSearch && matchKelas && matchStatus && matchLulus && focusFilter && !s.status_lulus;
-            });
-            currentPage = 1;
-            renderTable();
-            updateFilterStatusText();
-        }
+
+function filterSantri() {
+    const searchVal = document.getElementById("searchInput").value.toLowerCase();
+    const kelasVal = document.getElementById("filterKelas").value;
+    const statusVal = document.getElementById("filterStatus").value;
+    const lulusVal = document.getElementById("filterLulus").value;
+    const isFocusMode = document.getElementById("focusMode").checked;
+    
+    filteredData = currentData.filter(s => {
+        // HANYA proses santri dengan kelas valid (bukan alumni/mutasi)
+        if (!KELAS_VALID.includes(s.kelas)) return false;
+        
+        const isWaKosong = !s.wa || s.wa.toString().trim() === "" || s.wa.toString() === "0";
+        const matchSearch = s.nama.toLowerCase().includes(searchVal);
+        const matchKelas = kelasVal === "" || s.kelas === kelasVal;
+        
+        let matchStatus = true;
+        if (statusVal === "lengkap") matchStatus = s.data_lengkap && !s.status_lulus;
+        if (statusVal === "belum") matchStatus = !s.data_lengkap && !s.status_lulus;
+        if (statusVal === "no_wa") matchStatus = isWaKosong && !s.status_lulus;
+        
+        let matchLulus = true;
+        if (lulusVal === "aktif") matchLulus = !s.status_lulus;
+        if (lulusVal === "lulus") matchLulus = s.status_lulus === true;
+        
+        const focusFilter = isFocusMode ? (!s.data_lengkap && !s.status_lulus) : true;
+        
+        return matchSearch && matchKelas && matchStatus && matchLulus && focusFilter && !s.status_lulus;
+    });
+    
+    currentPage = 1;
+    renderTable();
+    updateFilterStatusText();
+}
+
 
         function resetAllFilters() {
             document.getElementById("searchInput").value = "";
@@ -2985,37 +3296,134 @@
             return `<div class="col-6 col-md-4"><div class="form-check p-2 m-0 border rounded-3 d-flex align-items-center mb-1 bg-light" style="cursor:pointer" onclick="updateStatus('${id}','${field}',${!val})"><i class="bi ${icon} ${val ? 'text-success' : 'text-secondary'} me-2"></i><label class="small ${colorClass}" style="font-size:0.7rem; cursor:pointer">${label}</label></div></div>`;
         }
 
-        function updateStatus(id, jenis, status) {
-            if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
+
+// ===== UPDATE STATUS PER BERKAS =====
+function updateStatus(id, jenis, status) {
+    if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
+
+    const santri = currentData.find(s => s.id === id);
+    const namaSantri = santri ? santri.nama : 'santri ini';
+    const kelasSantri = santri ? santri.kelas : '-';
+    const labelBerkas = {
+        kk: "Fc. KK", akta: "Fc. Akta Kelahiran", ijazah: "Fc. Ijazah Terakhir",
+        skl: "SKL", ktp_ayah: "Fc. KTP Ayah", ktp_ibu: "Fc. KTP Ibu", foto: "Pas Foto"
+    }[jenis] || jenis;
+
+    const berkas = santri?.berkas || {};
+    const jumlahAda = Object.values(berkas).filter(v => v === true).length;
+    const statusBaru = status ? "LENGKAP ✅" : "BELUM ❌";
+
+    showKonfirmasi({
+        title: status ? 'Tandai Berkas Lengkap' : 'Hapus Centang Berkas',
+        subtitle: status ? 'Konfirmasi penandaan berkas' : 'Konfirmasi penghapusan centang',
+        variant: status ? 'success' : 'warning',
+        icon: status ? 'bi-check-circle-fill' : 'bi-x-circle-fill',
+        message: status
+            ? `Tandai berkas ini sebagai LENGKAP?`
+            : `Hapus centang berkas ini?`,
+        infoRows: [
+            { label: '👤 Nama Santri', value: namaSantri },
+            { label: '🏫 Kelas', value: kelasSantri },
+            { label: '📄 Berkas', value: labelBerkas },
+            { label: '📊 Status Baru', value: statusBaru },
+            { label: '📈 Progress Saat Ini', value: `${jumlahAda}/7 berkas` }
+        ],
+        warning: status ? '' : 'Berkas akan ditandai belum lengkap.',
+        btnText: status ? 'Ya, Tandai Lengkap' : 'Ya, Hapus Centang',
+        onConfirm: () => {
             const ref = db.collection("santri").doc(id);
             ref.update({ [`berkas.${jenis}`]: status }).then(async () => {
-                showToast("Status berkas diperbarui");
+                showToast("Status berkas diperbarui", "success");
                 const doc = await ref.get();
                 const b = doc.data().berkas;
                 const lengkap = b.kk && b.akta && b.ijazah && b.skl && b.ktp_ayah && b.ktp_ibu && b.foto;
                 ref.update({ data_lengkap: lengkap });
+            }).catch(err => {
+                showToast("Gagal memperbarui status", "error");
+                console.error(err);
             });
         }
+    });
+}
 
-        function centangSemuaBerkas(id) {
-            if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
+// ===== CENTANG SEMUA BERKAS =====
+function centangSemuaBerkas(id) {
+    if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
+
+    const santri = currentData.find(s => s.id === id);
+    const namaSantri = santri ? santri.nama : 'santri ini';
+    const kelasSantri = santri ? santri.kelas : '-';
+    const berkas = santri?.berkas || {};
+    const jumlahAda = ['kk', 'akta', 'ijazah', 'skl', 'ktp_ayah', 'ktp_ibu', 'foto']
+        .filter(key => berkas[key] === true).length;
+
+    showKonfirmasi({
+        title: 'Lengkapi Semua Berkas',
+        subtitle: 'Konfirmasi penandaan semua berkas',
+        variant: 'success',
+        icon: 'bi-check-all',
+        message: 'Tandai SEMUA berkas sebagai LENGKAP?',
+        infoRows: [
+            { label: '👤 Nama Santri', value: namaSantri },
+            { label: '🏫 Kelas', value: kelasSantri },
+            { label: '📊 Progress Saat Ini', value: `${jumlahAda}/7 berkas` },
+            { label: '📄 Akan Ditandai', value: '7 berkas lengkap' }
+        ],
+        warning: 'Semua berkas akan ditandai lengkap sekaligus.',
+        btnText: 'Ya, Lengkapi Semua',
+        onConfirm: () => {
             const ref = db.collection("santri").doc(id);
-            ref.update({ "berkas.kk": true, "berkas.akta": true, "berkas.ijazah": true, "berkas.skl": true,
-                "berkas.ktp_ayah": true, "berkas.ktp_ibu": true, "berkas.foto": true, "data_lengkap": true })
-                .then(() => { showToast("Semua berkas ditandai lengkap", "success"); });
+            ref.update({
+                "berkas.kk": true, "berkas.akta": true, "berkas.ijazah": true, "berkas.skl": true,
+                "berkas.ktp_ayah": true, "berkas.ktp_ibu": true, "berkas.foto": true, "data_lengkap": true
+            }).then(() => {
+                showToast("Semua berkas ditandai lengkap", "success");
+            }).catch(err => {
+                showToast("Gagal memperbarui data", "error");
+                console.error(err);
+            });
         }
+    });
+}
 
-        function kosongkanSemuaBerkas(id) {
-            if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
-            if (confirm("Kosongkan semua status berkas santri ini?")) {
-                const ref = db.collection("santri").doc(id);
-                ref.update({ "berkas.kk": false, "berkas.akta": false, "berkas.ijazah": false, "berkas.skl": false,
-                    "berkas.ktp_ayah": false, "berkas.ktp_ibu": false, "berkas.foto": false,
-                    "data_lengkap": false }).then(() => { showToast("Semua berkas dikosongkan", "warning"); })
-                    .catch((error) => { showToast("Gagal mengupdate data", "error");
-                        console.error(error); });
-            }
+// ===== KOSONGKAN SEMUA BERKAS =====
+function kosongkanSemuaBerkas(id) {
+    if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
+
+    const santri = currentData.find(s => s.id === id);
+    const namaSantri = santri ? santri.nama : 'santri ini';
+    const kelasSantri = santri ? santri.kelas : '-';
+
+    showKonfirmasi({
+        title: 'Kosongkan Semua Berkas',
+        subtitle: 'Konfirmasi penghapusan centang',
+        variant: 'danger',
+        icon: 'bi-x-circle-fill',
+        message: 'Hapus centang SEMUA berkas?',
+        infoRows: [
+            { label: '👤 Nama Santri', value: namaSantri },
+            { label: '🏫 Kelas', value: kelasSantri },
+            { label: '📄 Akan Dikosongkan', value: '7 berkas' },
+            { label: '📊 Status Baru', value: 'BELUM LENGKAP' }
+        ],
+        warning: 'Semua centang berkas akan dihapus. Status santri menjadi belum lengkap.',
+        btnText: 'Ya, Kosongkan Semua',
+        onConfirm: () => {
+            const ref = db.collection("santri").doc(id);
+            ref.update({
+                "berkas.kk": false, "berkas.akta": false, "berkas.ijazah": false, "berkas.skl": false,
+                "berkas.ktp_ayah": false, "berkas.ktp_ibu": false, "berkas.foto": false,
+                "data_lengkap": false
+            }).then(() => {
+                showToast("Semua berkas dikosongkan", "warning");
+            }).catch(err => {
+                showToast("Gagal mengupdate data", "error");
+                console.error(err);
+            });
         }
+    });
+}
+
 
         function updatePaginationControls() {
             const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
@@ -3590,47 +3998,78 @@
                     "none"; }
         }
 
-        // ================================================================
-        // 22. REKAP WA
-        // ================================================================
-        function kirimRekapGrup() {
-            const santriBelumLengkap = filteredData.filter(s => !s.data_lengkap && !s.status_lulus);
-            if (santriBelumLengkap.length === 0) return showToast("Semua santri aktif sudah lengkap", "success");
-            const groupedByKelas = {};
-            santriBelumLengkap.forEach(s => { const kelas = s.kelas || "Tidak Diketahui"; if (!groupedByKelas[kelas])
-                    groupedByKelas[kelas] = []; 
-                groupedByKelas[kelas].push(s); });
-            const sortedKelas = Object.keys(groupedByKelas).sort((a, b) => { const numA = parseInt(a);
-                const numB = parseInt(b); if (!isNaN(numA) && !isNaN(numB)) return numA - numB; return a.localeCompare(
-                    b); });
-            const filterKelasVal = document.getElementById("filterKelas").value;
-            const judulFilter = filterKelasVal ? `KELAS: ${filterKelasVal.toUpperCase()}` : "SEMUA KELAS";
-            const labels = { kk: "Fc. KK", akta: "Fc. Akta", ijazah: "Fc. Ijazah Terakhir", skl: "SKL",
-                ktp_ayah: "Fc. KTP Ayah", ktp_ibu: "Fc. KTP Ibu", foto: "Pas Foto" };
-            let rincianSantri = "";
-            let totalSemua = 0;
-            sortedKelas.forEach(kelas => {
-                const santriKelas = groupedByKelas[kelas];
-                totalSemua += santriKelas.length;
-                rincianSantri += `▸ *KELAS ${kelas}* (${santriKelas.length} santri)\n────────────────────\n`;
-                santriKelas.forEach((s, index) => {
-                    let kurang = [];
-                    Object.keys(labels).forEach(key => { if (!s.berkas || !s.berkas[key]) kurang.push(
-                        labels[key]); });
-                    rincianSantri += `${index + 1}. *${s.nama}*\n   └ ⚠️ Kurang: _${kurang.join(", ")}_\n`;
-                });
-                rincianSantri += `\n`;
+
+function kirimRekapGrup() {
+    // Filter hanya santri aktif (kelas valid), belum lengkap, dan belum lulus
+    const santriBelumLengkap = filteredData.filter(s => 
+        !s.data_lengkap && 
+        !s.status_lulus && 
+        KELAS_VALID.includes(s.kelas)  // <-- HANYA KELAS VALID (bukan alumni/mutasi)
+    );
+    
+if (santriBelumLengkap.length === 0) {
+    showToast("✅ Semua santri aktif sudah lengkap! Tidak ada yang perlu di-rekap.", "success");
+    return;
+}
+    
+    const groupedByKelas = {};
+    santriBelumLengkap.forEach(s => { 
+        const kelas = s.kelas || "Tidak Diketahui"; 
+        if (!groupedByKelas[kelas]) groupedByKelas[kelas] = []; 
+        groupedByKelas[kelas].push(s); 
+    });
+    
+    const sortedKelas = Object.keys(groupedByKelas).sort((a, b) => { 
+        const numA = parseInt(a);
+        const numB = parseInt(b); 
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB; 
+        return a.localeCompare(b); 
+    });
+    
+    const filterKelasVal = document.getElementById("filterKelas").value;
+    const judulFilter = filterKelasVal ? `KELAS: ${filterKelasVal.toUpperCase()}` : "SEMUA KELAS AKTIF";
+    
+    const labels = { 
+        kk: "Fc. KK", 
+        akta: "Fc. Akta", 
+        ijazah: "Fc. Ijazah Terakhir", 
+        skl: "SKL",
+        ktp_ayah: "Fc. KTP Ayah", 
+        ktp_ibu: "Fc. KTP Ibu", 
+        foto: "Pas Foto" 
+    };
+    
+    let rincianSantri = "";
+    let totalSemua = 0;
+    
+    sortedKelas.forEach(kelas => {
+        const santriKelas = groupedByKelas[kelas];
+        totalSemua += santriKelas.length;
+        rincianSantri += `▸ *KELAS ${kelas}* (${santriKelas.length} santri)\n────────────────────\n`;
+        
+        santriKelas.forEach((s, index) => {
+            let kurang = [];
+            Object.keys(labels).forEach(key => { 
+                if (!s.berkas || !s.berkas[key]) kurang.push(labels[key]); 
             });
-            const totalKelas = sortedKelas.length;
-            const infoTambahan = filterKelasVal ? `(Filter: Kelas ${filterKelasVal})` :
-                `(${totalKelas} Kelas • ${totalSemua} Santri)`;
-            const pesanGrup =
-                `*LAPORAN ADMINISTRASI SANTRI*\n*PONPES IBNUL JAUZY*\n--------------------------------------------\n📍 *DAFTAR: ${judulFilter}*\n📅 Per Tanggal: ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}\n📊 ${infoTambahan}\n--------------------------------------------\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh.\n\nAyah/Bunda yang dirahmati Allah, berikut adalah daftar santri yang belum melengkapi berkas administrasi:\n\n${rincianSantri}---\n📲 *PILIHAN PENGIRIMAN:*\n1️⃣ *ONLINE:* https://bit.ly/rekap_berkas\n2️⃣ *LANGSUNG:* Diantar ke Bagian Administrasi Pondok.\n\nMohon bantuan Ayah/Bunda untuk segera melengkapinya demi tertibnya pendataan.\n\nJazakumullahu Khairan Katsiran.\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh.`;
-            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanGrup)}`;
-            const win = window.open(waUrl, '_blank');
-            if (win) win.focus();
-            else location.href = waUrl;
-        }
+            rincianSantri += `${index + 1}. *${s.nama}*\n   └ ⚠️ Kurang: _${kurang.join(", ")}_\n`;
+        });
+        rincianSantri += `\n`;
+    });
+    
+    const totalKelas = sortedKelas.length;
+    const infoTambahan = filterKelasVal ? `(Filter: Kelas ${filterKelasVal})` :
+        `(${totalKelas} Kelas • ${totalSemua} Santri Aktif)`;
+    
+    const pesanGrup =
+        `*LAPORAN ADMINISTRASI SANTRI*\n*PONPES IBNUL JAUZY*\n--------------------------------------------\n📍 *DAFTAR: ${judulFilter}*\n📅 Per Tanggal: ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}\n📊 ${infoTambahan}\n--------------------------------------------\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh.\n\nAyah/Bunda yang dirahmati Allah, berikut adalah daftar santri yang belum melengkapi berkas administrasi:\n\n${rincianSantri}---\n📲 *PILIHAN PENGIRIMAN:*\n1️⃣ *ONLINE:* https://bit.ly/rekap_berkas\n2️⃣ *LANGSUNG:* Diantar ke Bagian Administrasi Pondok.\n\nMohon bantuan Ayah/Bunda untuk segera melengkapinya demi tertibnya pendataan.\n\nJazakumullahu Khairan Katsiran.\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh.`;
+    
+    const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanGrup)}`;
+    const win = window.open(waUrl, '_blank');
+    if (win) win.focus();
+    else location.href = waUrl;
+}
+
 
         // ================================================================
         // 23. IMPORT / EXPORT
@@ -3855,36 +4294,133 @@
             }
         }
 
-        function updatePIPStatus(id, docKey, status) {
-            if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
+
+// ===== UPDATE STATUS PER DOKUMEN PIP =====
+function updatePIPStatus(id, docKey, status) {
+    if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
+
+    const santri = currentData.find(s => s.id === id);
+    const namaSantri = santri ? santri.nama : 'santri ini';
+    const kelasSantri = santri ? santri.kelas : '-';
+    const labelDokumen = PIP_DOCS[docKey] || docKey;
+
+    const pip = santri?.pip || {};
+    const jumlahAda = PIP_DOC_KEYS.filter(key => pip[key] === true).length;
+    const statusBaru = status ? "ADA ✅" : "TIDAK ADA ❌";
+
+    showKonfirmasi({
+        title: status ? 'Tandai Dokumen Ada' : 'Hapus Centang Dokumen',
+        subtitle: 'Konfirmasi status dokumen PIP',
+        variant: 'purple',
+        icon: status ? 'bi-check-circle-fill' : 'bi-x-circle-fill',
+        message: status
+            ? `Tandai dokumen PIP ini sebagai ADA?`
+            : `Hapus centang dokumen PIP ini?`,
+        infoRows: [
+            { label: '👤 Nama Santri', value: namaSantri },
+            { label: '🏫 Kelas', value: kelasSantri },
+            { label: '📄 Dokumen PIP', value: labelDokumen },
+            { label: '📊 Status Baru', value: statusBaru },
+            { label: '📈 Progress Saat Ini', value: `${jumlahAda}/${PIP_DOC_COUNT} dokumen` }
+        ],
+        warning: status ? '' : 'Dokumen akan ditandai tidak ada.',
+        btnText: status ? 'Ya, Tandai Ada' : 'Ya, Hapus Centang',
+        onConfirm: () => {
             const ref = db.collection("santri").doc(id);
             const updateData = {};
             updateData[`pip.${docKey}`] = status;
-            ref.update(updateData).then(() => { showToast(`Status ${PIP_DOCS[docKey]} diperbarui`, 'success');
-                renderPIPList(); }).catch((error) => { console.error("Error update PIP:", error);
-                showToast("Gagal memperbarui status", "error"); });
+            ref.update(updateData).then(() => {
+                showToast(`Status ${labelDokumen} diperbarui`, 'success');
+                renderPIPList();
+            }).catch((error) => {
+                console.error("Error update PIP:", error);
+                showToast("Gagal memperbarui status", "error");
+            });
         }
+    });
+}
 
-        function centangSemuaPIP(id) {
-            if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
+// ===== CENTANG SEMUA DOKUMEN PIP =====
+function centangSemuaPIP(id) {
+    if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
+
+    const santri = currentData.find(s => s.id === id);
+    const namaSantri = santri ? santri.nama : 'santri ini';
+    const kelasSantri = santri ? santri.kelas : '-';
+    const pip = santri?.pip || {};
+    const jumlahAda = PIP_DOC_KEYS.filter(key => pip[key] === true).length;
+
+    const daftarDokumen = PIP_DOC_KEYS.map(key => PIP_DOCS[key]).join(', ');
+
+    showKonfirmasi({
+        title: 'Lengkapi Semua Dokumen PIP',
+        subtitle: 'Konfirmasi penandaan semua dokumen',
+        variant: 'success',
+        icon: 'bi-check-all',
+        message: 'Tandai SEMUA dokumen PIP sebagai ADA?',
+        infoRows: [
+            { label: '👤 Nama Santri', value: namaSantri },
+            { label: '🏫 Kelas', value: kelasSantri },
+            { label: '📊 Progress Saat Ini', value: `${jumlahAda}/${PIP_DOC_COUNT} dokumen` },
+            { label: '📄 Akan Ditandai', value: `${PIP_DOC_COUNT} dokumen` },
+            { label: '📋 Daftar', value: daftarDokumen }
+        ],
+        warning: 'Semua dokumen PIP akan ditandai ada sekaligus.',
+        btnText: 'Ya, Lengkapi Semua',
+        onConfirm: () => {
             const ref = db.collection("santri").doc(id);
             const updateData = {};
             PIP_DOC_KEYS.forEach(key => { updateData[`pip.${key}`] = true; });
-            ref.update(updateData).then(() => { showToast("Semua dokumen PIP ditandai lengkap", "success");
-                renderPIPList(); }).catch((error) => { console.error("Error:", error);
-                showToast("Gagal memperbarui data", "error"); });
+            ref.update(updateData).then(() => {
+                showToast("Semua dokumen PIP ditandai lengkap", "success");
+                renderPIPList();
+            }).catch((error) => {
+                console.error("Error:", error);
+                showToast("Gagal memperbarui data", "error");
+            });
         }
+    });
+}
 
-        function kosongkanSemuaPIP(id) {
-            if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
-            if (!confirm("Kosongkan semua status dokumen PIP santri ini?")) return;
+// ===== KOSONGKAN SEMUA DOKUMEN PIP =====
+function kosongkanSemuaPIP(id) {
+    if (sessionRole !== 'admin') { showToast('Akses ditolak. Hanya Admin.', 'error'); return; }
+
+    const santri = currentData.find(s => s.id === id);
+    const namaSantri = santri ? santri.nama : 'santri ini';
+    const kelasSantri = santri ? santri.kelas : '-';
+    const pip = santri?.pip || {};
+    const jumlahAda = PIP_DOC_KEYS.filter(key => pip[key] === true).length;
+
+    showKonfirmasi({
+        title: 'Kosongkan Semua Dokumen PIP',
+        subtitle: 'Konfirmasi penghapusan centang',
+        variant: 'danger',
+        icon: 'bi-x-circle-fill',
+        message: 'Hapus centang SEMUA dokumen PIP?',
+        infoRows: [
+            { label: '👤 Nama Santri', value: namaSantri },
+            { label: '🏫 Kelas', value: kelasSantri },
+            { label: '📊 Progress Saat Ini', value: `${jumlahAda}/${PIP_DOC_COUNT} dokumen` },
+            { label: '📄 Akan Dikosongkan', value: `${PIP_DOC_COUNT} dokumen` }
+        ],
+        warning: 'Semua centang dokumen PIP akan dihapus. Status menjadi belum lengkap.',
+        btnText: 'Ya, Kosongkan Semua',
+        onConfirm: () => {
             const ref = db.collection("santri").doc(id);
             const updateData = {};
             PIP_DOC_KEYS.forEach(key => { updateData[`pip.${key}`] = false; });
-            ref.update(updateData).then(() => { showToast("Semua dokumen PIP dikosongkan", "warning");
-                renderPIPList(); }).catch((error) => { console.error("Error:", error);
-                showToast("Gagal memperbarui data", "error"); });
+            ref.update(updateData).then(() => {
+                showToast("Semua dokumen PIP dikosongkan", "warning");
+                renderPIPList();
+            }).catch((error) => {
+                console.error("Error:", error);
+                showToast("Gagal memperbarui data", "error");
+            });
         }
+    });
+}
+
 
         function togglePenerimaPIP(id, status) {
             if (sessionRole !== 'admin') { 
