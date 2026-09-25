@@ -1371,6 +1371,226 @@
     border-color: rgba(25, 135, 84, 0.4);
     color: #198754;
 }
+
+
+/* ===== MODAL LOGOUT KEREN ===== */
+.modal-logout .modal-content {
+    border-radius: 24px !important;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+    border: none;
+}
+
+.logout-content {
+    position: relative;
+    background: var(--bg-modal);
+}
+
+/* Background Animasi Gradient */
+.logout-bg-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+    border-radius: 24px 24px 50% 50% / 24px 24px 30% 30%;
+    z-index: 0;
+}
+
+[data-bs-theme="dark"] .logout-bg-animation {
+    background: linear-gradient(135deg, #b02a37 0%, #6a1b1b 100%);
+}
+
+/* Icon Wrapper dengan Animasi */
+.logout-icon-wrapper {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    margin-top: 10px;
+}
+
+.logout-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #dc3545, #b02a37);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: white;
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+    position: relative;
+    z-index: 3;
+    animation: logoutIconBounce 2s ease-in-out infinite;
+}
+
+@keyframes logoutIconBounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-6px) scale(1.02); }
+}
+
+/* Ring Berputar */
+.logout-icon-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 88px;
+    height: 88px;
+    border: 2px dashed rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    animation: spin 8s linear infinite;
+    z-index: 1;
+}
+
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Pulse Effect */
+.logout-icon-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(220, 53, 69, 0.4);
+    animation: logoutPulse 2s ease-out infinite;
+    z-index: 0;
+}
+
+@keyframes logoutPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.8);
+        opacity: 0;
+    }
+}
+
+/* Title & Subtitle */
+.logout-title {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    margin-top: 10px;
+}
+
+.logout-subtitle {
+    line-height: 1.5;
+    padding: 0 10px;
+}
+
+/* Info Box */
+.logout-info-box {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 12px 16px;
+}
+
+.logout-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0d6efd, #0043a8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+/* Buttons */
+.logout-btn-cancel {
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    background: var(--bg-input);
+    color: var(--text-primary);
+}
+
+.logout-btn-cancel:hover {
+    background: var(--border-color);
+    transform: translateY(-1px);
+}
+
+.logout-btn-confirm {
+    background: linear-gradient(135deg, #dc3545, #b02a37);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.logout-btn-confirm::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.logout-btn-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+    color: white;
+}
+
+.logout-btn-confirm:hover::before {
+    left: 100%;
+}
+
+.logout-btn-confirm:active {
+    transform: scale(0.97);
+}
+
+/* Footer Note */
+.logout-footer-note {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.logout-footer-note i {
+    color: #198754;
+}
+
+/* ===== MODE DARK ===== */
+[data-bs-theme="dark"] .logout-bg-animation {
+    background: linear-gradient(135deg, #b02a37 0%, #4a1010 100%);
+}
+
+[data-bs-theme="dark"] .logout-info-box {
+    background: var(--bg-input);
+    border-color: var(--border-color);
+}
     </style>
 </head>
 <body>
@@ -2278,6 +2498,63 @@
     </div>
 </div>
 
+        <!-- ===== MODAL KONFIRMASI LOGOUT ===== -->
+<div class="modal fade modal-logout" id="modalLogout" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 logout-content">
+            <!-- Animated Background -->
+            <div class="logout-bg-animation"></div>
+            
+            <div class="modal-body text-center p-4 position-relative">
+                <!-- Icon dengan animasi -->
+                <div class="logout-icon-wrapper mx-auto mb-3">
+                    <div class="logout-icon-pulse"></div>
+                    <div class="logout-icon-ring"></div>
+                    <div class="logout-icon">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </div>
+                </div>
+                
+                <!-- Title -->
+                <h5 class="fw-bold mb-2 logout-title">Keluar dari Sistem?</h5>
+                <p class="text-muted small mb-3 logout-subtitle">
+                    Sesi Anda akan diakhiri dan perlu login kembali untuk mengakses sistem.
+                </p>
+                
+                <!-- User Info Box -->
+                <div class="logout-info-box mb-4">
+                    <div class="d-flex align-items-center justify-content-center gap-2">
+                        <div class="logout-avatar" id="logoutAvatar">A</div>
+                        <div class="text-start">
+                            <div class="fw-bold small" id="logoutRoleText">Admin</div>
+                            <div class="text-muted" style="font-size:0.7rem;">
+                                <i class="bi bi-clock me-1"></i>
+                                <span id="logoutTime">--:--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-light flex-fill logout-btn-cancel" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-1"></i> Batal
+                    </button>
+                    <button type="button" class="btn flex-fill logout-btn-confirm" id="btnLogoutConfirm">
+                        <i class="bi bi-box-arrow-right me-1"></i> Keluar
+                    </button>
+                </div>
+                
+                <!-- Footer Note -->
+                <div class="logout-footer-note mt-3">
+                    <i class="bi bi-shield-check me-1"></i>
+                    <span>Sesi aman &amp; terenkripsi</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     </div><!-- end appContent -->
 
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js">
@@ -2682,8 +2959,56 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
 
-        function handleLogout() {
-            if (confirm('Apakah Anda yakin ingin keluar dari sistem?')) {
+
+// ================================================================
+// HANDLE LOGOUT DENGAN KONFIRMASI KEREN
+// ================================================================
+let logoutConfirmed = false;
+
+function handleLogout() {
+    // Reset state
+    logoutConfirmed = false;
+    
+    // Update info di modal
+    const role = sessionRole === 'admin' ? 'Admin' : 'Viewer';
+    const avatarEl = document.getElementById('logoutAvatar');
+    const roleTextEl = document.getElementById('logoutRoleText');
+    const timeEl = document.getElementById('logoutTime');
+    
+    if (avatarEl) avatarEl.textContent = role.charAt(0).toUpperCase();
+    if (roleTextEl) roleTextEl.textContent = role;
+    if (timeEl) {
+        const now = new Date();
+        timeEl.textContent = now.toLocaleTimeString('id-ID', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+    }
+    
+    // Tampilkan modal
+    const modal = new bootstrap.Modal(document.getElementById('modalLogout'));
+    modal.show();
+}
+
+// Handler tombol konfirmasi logout
+document.addEventListener('DOMContentLoaded', function() {
+    const btnConfirm = document.getElementById('btnLogoutConfirm');
+    if (btnConfirm) {
+        btnConfirm.addEventListener('click', function() {
+            if (logoutConfirmed) return;
+            logoutConfirmed = true;
+            
+            // Animasi tombol
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Keluar...';
+            this.disabled = true;
+            
+            // Tutup modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalLogout'));
+            
+            setTimeout(() => {
+                modal.hide();
+                
+                // Proses logout
                 sessionStorage.removeItem('santriSession');
                 sessionRole = null;
                 appContent.style.display = 'none';
@@ -2692,13 +3017,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 pinDots.forEach(d => d.classList.remove('filled', 'active'));
                 loginError.textContent = '';
                 loginInput.focus();
+                
+                // Reset data
                 currentData = [];
                 filteredData = [];
                 filteredDataLulus = [];
                 dataSKPIP = [];
                 filteredDataSKPIP = [];
-            }
-        }
+                
+                // Reset tombol
+                this.innerHTML = '<i class="bi bi-box-arrow-right me-1"></i> Keluar';
+                this.disabled = false;
+                logoutConfirmed = false;
+                
+                // Toast sukses
+                setTimeout(() => {
+                    showToast('👋 Anda telah keluar dari sistem', 'success');
+                }, 300);
+                
+            }, 800);
+        });
+    }
+});
+
 
         // ================================================================
         // 6. TOGGLE PASSWORD VISIBILITY
